@@ -6,10 +6,6 @@ import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.Selection;
 import hr.fer.zemris.zavrsni.algorithms.operators.selection.RandomSelection;
-import hr.fer.zemris.zavrsni.algorithms.operators.selection.RouletteWheelSelection;
-import hr.fer.zemris.zavrsni.algorithms.operators.selection.TournamentSelection;
-import hr.fer.zemris.zavrsni.algorithms.providers.DummyFitnessProvider;
-import hr.fer.zemris.zavrsni.algorithms.providers.RankProvider;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.solution.Solution;
 
@@ -17,6 +13,7 @@ import java.util.*;
 
 import static hr.fer.zemris.zavrsni.algorithms.MOOPUtils.mergePopulations;
 
+//TODO pronaci sto nije u redu da ispravim da napokon proradi na dtlz1
 public class NSGA3 extends AbstractMOOPAlgorithm {
 
     private Random rand = new Random();
@@ -113,15 +110,9 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
             double intercept = NSGA3Util.getIntercept(hyperplane, i);
             for (Solution sol : St) {
                 double[] objectives = sol.getObjectives();
-                objectives[i] /= intercept;
+                objectives[i] /= intercept - idealPoint[i];
             }
         }
-//        System.out.println(Arrays.toString(St.get(1).getObjectives()));
-//        System.out.println(Arrays.toString(hyperplane));
-//        for(int i = 0; i < problem.getNumberOfObjectives(); i++){
-//            System.out.print(NSGA3Util.getIntercept(hyperplane, i) + " ");
-//        }
-//        System.exit(0);
     }
 
     private void associate(List<Solution> St, List<NSGA3Util.ReferencePoint> referencePoints, double[] distances,

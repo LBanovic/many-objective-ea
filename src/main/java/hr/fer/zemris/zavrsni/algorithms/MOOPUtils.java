@@ -91,7 +91,7 @@ public final class MOOPUtils {
         currentFronts = fronts;
     }
 
-    private static boolean dominates(Solution s1, Solution s2) {
+    public static boolean dominates(Solution s1, Solution s2) {
         double[] obj1 = s1.getObjectives();
         double[] obj2 = s2.getObjectives();
 
@@ -160,10 +160,8 @@ public final class MOOPUtils {
     }
 
     public static void printSolutions(AbstractMOOPAlgorithm a){
-        for(List<Solution> list : a.paretoFronts()){
-            for(Solution s : list){
-                System.out.println(s);
-            }
+        for (Solution s : a.getNondominatedSolutions()){
+            System.out.println(s);
         }
     }
 

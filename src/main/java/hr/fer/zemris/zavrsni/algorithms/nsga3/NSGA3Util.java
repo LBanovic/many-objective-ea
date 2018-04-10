@@ -18,7 +18,7 @@ public class NSGA3Util {
         return multiply;
     }
 
-    protected static int binomialCoefficient(int n, int k) {
+    public static int binomialCoefficient(int n, int k) {
         if (n < k) throw new IllegalArgumentException("n must be greater than k");
         return factorial(n) / (factorial(k) * factorial(n - k));
     }

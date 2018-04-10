@@ -35,6 +35,10 @@ public abstract class AbstractMOOPAlgorithm {
         return fronts;
     }
 
+    public List<Solution> getNondominatedSolutions(){
+        return fronts.get(0);
+    }
+
     public int populationSize(){
         return population.length;
     }
