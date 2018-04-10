@@ -57,7 +57,7 @@ public class MOEAD extends AbstractMOOPAlgorithm {
         } else {
             for (int i = 0; i <= left; i++) {
                 weight[element] = (double) i / total;
-                recursiveWeights(weights, weight, numberOfObjectives, left - i, total, element + 1);
+                recursiveWeights(weights, weight, element + 1, numberOfObjectives, left - i, total);
             }
         }
     }
@@ -68,9 +68,6 @@ public class MOEAD extends AbstractMOOPAlgorithm {
         recursiveWeights(weights, weight, 0, problem.getNumberOfObjectives(), parameterH, parameterH);
         for(int i = 0; i < weights.size(); i++){
             realWeights[i] = weights.get(i);
-        }
-        for(double[] d : realWeights){
-            System.out.println(Arrays.toString(d));
         }
     }
 
@@ -98,9 +95,9 @@ public class MOEAD extends AbstractMOOPAlgorithm {
         throw new UnsupportedOperationException("This algorithm does not employ non dominated sorting!");
     }
 
-    public static void main(String[] args) {
-        MOOPProblem m = new DTLZ1(3);
-        double[][] weights = new double[351][3];
-        MOEAD.initializeWeights(m, 25, weights);
-    }
+//    public static void main(String[] args) {
+//        MOOPProblem m = new DTLZ1(3);
+//        double[][] weights = new double[351][3];
+//        MOEAD.initializeWeights(m, 25, weights);
+//    }
 }
