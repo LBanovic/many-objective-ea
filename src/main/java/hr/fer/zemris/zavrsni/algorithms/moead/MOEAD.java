@@ -3,6 +3,7 @@ package hr.fer.zemris.zavrsni.algorithms.moead;
 import hr.fer.zemris.zavrsni.algorithms.AbstractMOOPAlgorithm;
 import hr.fer.zemris.zavrsni.algorithms.nsga3.NSGA3Util;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
+import hr.fer.zemris.zavrsni.evaluator.examples.DTLZ1;
 import hr.fer.zemris.zavrsni.solution.Solution;
 
 import java.util.*;
@@ -22,15 +23,15 @@ public class MOEAD extends AbstractMOOPAlgorithm {
         this.closestVectors = closestVectors;
         this.parameterH = parameterH;
         int numberOfWeights = NSGA3Util.binomialCoefficient(parameterH + problem.getNumberOfObjectives() - 1,
-                            problem.getNumberOfObjectives() - 1);
+                problem.getNumberOfObjectives() - 1);
         weights = new double[numberOfWeights][problem.getNumberOfObjectives()];
-        initializeWeights();
+        initializeWeights(problem, parameterH, weights);
         this.neighbourhoods = new HashMap<>();
-        for(int i = 0; i < numberOfWeights; i++){
+        for (int i = 0; i < numberOfWeights; i++) {
             int[] neighbours = new int[closestVectors];
             double lastDistance = 0;
             double currentMinDistance = Double.MAX_VALUE;
-            for(int k = 0; k < closestVectors; k++) {
+            for (int k = 0; k < closestVectors; k++) {
                 int min = (lastDistance == 0 ? 1 : 0);
                 for (int j = 0; j < numberOfWeights; j++) {
                     if (j != i) {
@@ -48,8 +49,29 @@ public class MOEAD extends AbstractMOOPAlgorithm {
         }
     }
 
-    private void initializeWeights() {
-        //TODO initialize weights == use recursion ??
+    //TODO initialize weights == use recursion ?? prepravi ovo
+    private static void recursiveWeights(List<double[]> weights, double[] weight, int element, int numberOfObjectives, int left, int total) {
+        if (element == numberOfObjectives - 1) {
+            weight[element] = (double) left / total;
+            weights.add(weight.clone());
+        } else {
+            for (int i = 0; i <= left; i++) {
+                weight[element] = (double) i / total;
+                recursiveWeights(weights, weight, numberOfObjectives, left - i, total, element + 1);
+            }
+        }
+    }
+
+    private static void initializeWeights(MOOPProblem problem, int parameterH, double[][] realWeights){
+        List<double[]> weights = new LinkedList<>();
+        double[] weight = new double[problem.getNumberOfObjectives()];
+        recursiveWeights(weights, weight, 0, problem.getNumberOfObjectives(), parameterH, parameterH);
+        for(int i = 0; i < weights.size(); i++){
+            realWeights[i] = weights.get(i);
+        }
+        for(double[] d : realWeights){
+            System.out.println(Arrays.toString(d));
+        }
     }
 
     @Override
@@ -58,9 +80,9 @@ public class MOEAD extends AbstractMOOPAlgorithm {
 
     }
 
-    private double euclidianDistance(double[] v1, double[] v2){
+    private double euclidianDistance(double[] v1, double[] v2) {
         double dist = 0;
-        for(int i = 0; i < v1.length; i++){
+        for (int i = 0; i < v1.length; i++) {
             dist += (v1[i] - v2[i]) * (v1[i] - v2[i]);
         }
         return Math.sqrt(dist);
@@ -74,5 +96,11 @@ public class MOEAD extends AbstractMOOPAlgorithm {
     @Override
     public List<List<Solution>> paretoFronts() {
         throw new UnsupportedOperationException("This algorithm does not employ non dominated sorting!");
+    }
+
+    public static void main(String[] args) {
+        MOOPProblem m = new DTLZ1(3);
+        double[][] weights = new double[351][3];
+        MOEAD.initializeWeights(m, 25, weights);
     }
 }
