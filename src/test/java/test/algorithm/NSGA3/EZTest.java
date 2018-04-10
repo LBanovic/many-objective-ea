@@ -13,11 +13,15 @@ import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.solution.Solution;
 import test.easyproblems.EZProblem;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class EZTest {
 
     public static void main(String[] args) {
         int numberOfDivisions = 4;
         int problemSize = 5;
+        int distributionIndex = 4;
 
         double mutationChance = 0.08;
         double sigma = 0.1;
@@ -35,7 +39,11 @@ public class EZTest {
 
         AbstractMOOPAlgorithm nsga3 = new NSGA3(population, problem, crossover, mutation, maxGen, allowRepetition, numberOfDivisions);
         nsga3.run();
-        MOOPUtils.printSolutions(nsga3);
-
+//        MOOPUtils.printSolutions(nsga3);
+        for (List<Solution> l : nsga3.paretoFronts()){
+            for(Solution s : l){
+                System.out.println(Arrays.toString(s.getObjectives()));
+            }
+        }
     }
 }

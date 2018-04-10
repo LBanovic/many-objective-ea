@@ -23,7 +23,7 @@ public class SBXCrossover implements Crossover {
     private double generateBeta(){
         double u = rand.nextDouble();
         if (u > 0.5){
-            u -= 0.5;
+//            u -= 0.5;
             u = 1 - 2 * u;
             return Math.pow(u, 1 / (-n - 1.));
         }

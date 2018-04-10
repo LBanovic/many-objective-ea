@@ -1,15 +1,11 @@
 package hr.fer.zemris.zavrsni.algorithms;
 
-import hr.fer.zemris.zavrsni.algorithms.AbstractMOOPAlgorithm;
-import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.Selection;
 import hr.fer.zemris.zavrsni.algorithms.providers.DummyFitnessProvider;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.solution.Solution;
-
-import java.util.LinkedList;
 
 public class NSGA extends AbstractMOOPAlgorithm {
 

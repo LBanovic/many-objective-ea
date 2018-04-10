@@ -21,13 +21,16 @@ public class TestDTLZ1 {
 
     public static void main(String[] args) {
 
-        int numberOfDivisions = 7;
+        int numberOfDivisions = 11;
         int problemSize = 3;
-        int distributionIndex = 3;
+        int distributionIndex = 20;
 
-        double mutationChance = 0.08;
-        double sigma = 0.3;
-        double alpha = 0.2;
+
+        MOOPProblem problem = new DTLZ1(problemSize);
+
+        double mutationChance = 1./problem.getNumberOfVariables();
+        double sigma = 0.08;
+        double alpha = 0.08;
 
         int maxGen = 1000;
         int populationSize = 100;
@@ -35,7 +38,6 @@ public class TestDTLZ1 {
         boolean allowRepetition = false;
 
 
-        MOOPProblem problem = new DTLZ1(problemSize);
         Solution[] population = MOOPUtils.generateRandomPopulation(
                 NSGA3Util.getNumberOfReferencePoints(problem.getNumberOfObjectives(), numberOfDivisions),
                 problem);

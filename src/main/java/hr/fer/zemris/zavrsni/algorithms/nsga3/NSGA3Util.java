@@ -36,29 +36,33 @@ public class NSGA3Util {
         }
     }
 
-    protected static void translateObjectives(List<Solution> St, int numberOfObjectives) {
-        for (int i = 0; i < numberOfObjectives; i++) {
-            double zMin = Double.MAX_VALUE;
+    protected static double[] findIdealPoint(List<Solution> St, int numberOfObjectives) {
+        double[] zmin = new double[numberOfObjectives];
+        for (int i = 0; i < zmin.length; i++) {
+            zmin[i] = Double.MAX_VALUE;
             for (int j = 0; j < St.size(); j++) {
                 double objectiveValue = St.get(j).getObjectives()[i];
-                if (objectiveValue < zMin) zMin = objectiveValue;
-            }
-            for (Solution sol : St) {
-                sol.getObjectives()[i] -= zMin;
+                if (objectiveValue < zmin[i]) zmin[i] = objectiveValue;
             }
         }
+        return zmin;
     }
 
+    protected static void subtractIdealPoint(double[] from, double[] idealPoint){
+        for(int i = 0; i < idealPoint.length; i++){
+            from[i] -= idealPoint[i];
+        }
+    }
     private static double achievementScalarizingFunction(Solution sol, int index) {
         final double onAxis = 1.;
-        final double other = 1e-6;
+        final double other = 1e-10;
         double max = Double.MIN_VALUE;
         double[] objectives = sol.getObjectives();
         for (int i = 0; i < objectives.length; i++) {
             double weight;
             if (i == index) weight = onAxis;
             else weight = other;
-            max = Math.max(max, objectives[i] / weight);
+            if(objectives[i] / weight > max) max = objectives[i] / weight;
         }
         return max;
     }
@@ -101,8 +105,8 @@ public class NSGA3Util {
     protected static double perpendicularDistance(Solution sol, ReferencePoint referencePoint) {
         RealVector s = new ArrayRealVector(sol.getObjectives());
         RealVector w = new ArrayRealVector(referencePoint.location);
-        double d = s.subtract(w.mapMultiply(w.dotProduct(s)).mapMultiply(1. / (w.getNorm()*w.getNorm()))).getNorm();
-        return d;
+        return s.subtract(w.mapMultiply(w.dotProduct(s)).mapMultiply(1. / (w.getNorm()*w.getNorm()))).getNorm();
+
     }
 
     protected static class ReferencePoint {
@@ -136,9 +140,5 @@ public class NSGA3Util {
 
     public static int getNumberOfReferencePoints(int numberOfObjectives, int numberOfDivisions){
         return binomialCoefficient(numberOfObjectives + numberOfDivisions - 1, numberOfDivisions);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(getNumberOfReferencePoints(5, 3));
     }
 }
