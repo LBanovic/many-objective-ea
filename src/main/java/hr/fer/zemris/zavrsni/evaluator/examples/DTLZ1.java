@@ -76,4 +76,15 @@ public class DTLZ1 extends MOOPProblem {
     @Override public int getNumberOfVariables() {
         return objectives.length + k - 1;
     }
+
+    @Override
+    public void evaluateObjectives(Solution solution){
+        double[] objectives = solution.getObjectives();
+        if (objectives.length != this.objectives.length) {
+            throw new RuntimeException("Array not the required dimension");
+        }
+        for (int i = 0; i < objectives.length; i++) {
+            objectives[i] = -this.objectives[i].valueAt(solution);
+        }
+    }
 }

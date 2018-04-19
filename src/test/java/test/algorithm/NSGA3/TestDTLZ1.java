@@ -37,14 +37,13 @@ public class TestDTLZ1 {
         int tournamentSize = 8;
         boolean allowRepetition = false;
 
-
         Solution[] population = MOOPUtils.generateRandomPopulation(
                 NSGA3Util.getNumberOfReferencePoints(problem.getNumberOfObjectives(), numberOfDivisions),
                 problem);
         Crossover crossover = new BLXAlpha(alpha, problem.getLowerBounds(), problem.getUpperBounds());
         Mutation mutation = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), mutationChance, sigma);
 
-        AbstractMOOPAlgorithm nsga3 = new NSGA3(population, problem, crossover, mutation, maxGen, allowRepetition, numberOfDivisions);
+        AbstractMOOPAlgorithm nsga3 = new NSGA2(population, problem, crossover, mutation, tournamentSize, maxGen, allowRepetition);
         nsga3.run();
 //        MOOPUtils.printSolutions(nsga3);
         for (List<Solution> l : nsga3.paretoFronts()){

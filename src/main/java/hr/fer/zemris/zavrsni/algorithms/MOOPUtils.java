@@ -161,7 +161,7 @@ public final class MOOPUtils {
 
     public static void printSolutions(AbstractMOOPAlgorithm a){
         for (Solution s : a.getNondominatedSolutions()){
-            System.out.println(s);
+            System.out.println(Arrays.toString(s.getObjectives()));
         }
     }
 

@@ -107,10 +107,10 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
         Solution[] extremes = NSGA3Util.extremePoints(St, problem.getNumberOfObjectives());
         double[] hyperplane = NSGA3Util.constructHyperplane(extremes);
         for (int i = 0; i < problem.getNumberOfObjectives(); i++) {
-            double intercept = NSGA3Util.getIntercept(hyperplane, i);
+            double intercept = NSGA3Util.getIntercept(hyperplane, i) - idealPoint[i];
             for (Solution sol : St) {
                 double[] objectives = sol.getObjectives();
-                objectives[i] /= intercept - idealPoint[i];
+                objectives[i] /= intercept;
             }
         }
     }

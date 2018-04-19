@@ -20,7 +20,13 @@ public class NSGA3Util {
 
     public static int binomialCoefficient(int n, int k) {
         if (n < k) throw new IllegalArgumentException("n must be greater than k");
-        return factorial(n) / (factorial(k) * factorial(n - k));
+        System.out.println(n + " " + k);
+        if(k > n / 2) k = n - k;
+        int mul = 1;
+        for(int i = n - k + 1; i <= n; i++){
+            mul *= i;
+        }
+        return mul / factorial(k);
     }
 
     protected static void getReferencePoints(List<ReferencePoint> points, ReferencePoint point,
