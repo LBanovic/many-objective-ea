@@ -35,13 +35,16 @@ public class NSGATestHarder {
         Solution[] population = MOOPUtils.generateRandomPopulation(populationSize, problem);
         Crossover crossover = new BLXAlpha(blxAlpha, problem.getLowerBounds(), problem.getUpperBounds());
         Mutation mutation = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), sigma, mutationChance);
-        Selection selection = new RouletteWheelSelection();
-        AbstractMOOPAlgorithm nsga = new NSGA(population, problem, crossover, selection, mutation, maxGen, allowRepetition,
+        RouletteWheelSelection selection = new RouletteWheelSelection();
+        NSGA nsga = new NSGA(population, problem, crossover, selection, mutation, maxGen, allowRepetition,
                         epsilon,
                         sigmaShare,
                         alpha);
+        nsga.attachObserver(selection);
         nsga.run();
 
+        MOOPUtils.printParameters(nsga);
+        System.out.println();
         MOOPUtils.printSolutions(nsga);
     }
 }

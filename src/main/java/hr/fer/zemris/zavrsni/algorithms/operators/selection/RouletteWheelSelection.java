@@ -1,5 +1,6 @@
 package hr.fer.zemris.zavrsni.algorithms.operators.selection;
 
+import hr.fer.zemris.zavrsni.algorithms.FitnessObserver;
 import hr.fer.zemris.zavrsni.algorithms.providers.ValueProvider;
 import hr.fer.zemris.zavrsni.algorithms.operators.Selection;
 import hr.fer.zemris.zavrsni.solution.Solution;
@@ -11,10 +12,9 @@ import java.util.Random;
 /**
  * Class that implements basic roulette wheel selection.
  */
-public class RouletteWheelSelection implements Selection {
+public class RouletteWheelSelection implements Selection, FitnessObserver{
     private Random rand = new Random();
 
-    private Solution[] oldPopulation;
     private Map<Solution, Double> dummyFitness = new HashMap<>();
 
     private ValueProvider<Double> provider;
@@ -26,10 +26,6 @@ public class RouletteWheelSelection implements Selection {
 
     @Override public Solution select(Solution[] population) {
         if(provider == null) throw new RuntimeException("Roulette selection fitness provider not initialized.");
-        if(oldPopulation != population){
-            oldPopulation = population;
-            provider.provide(dummyFitness);
-        }
         double minFitness = dummyFitness.get(population[0]);
         double[] allFitness = new double[population.length];
 
@@ -59,5 +55,10 @@ public class RouletteWheelSelection implements Selection {
             indexToReturn = population.length - 1;
         }
         return population[indexToReturn];
+    }
+
+    @Override
+    public void onFitnessChanged() {
+        provider.provide(dummyFitness);
     }
 }

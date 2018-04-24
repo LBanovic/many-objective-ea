@@ -2,6 +2,8 @@ package hr.fer.zemris.zavrsni.algorithms.operators;
 
 import hr.fer.zemris.zavrsni.solution.Solution;
 
+import java.util.List;
+
 public interface Crossover {
 
     /**
@@ -10,5 +12,5 @@ public interface Crossover {
      * @param p2 the second parent
      * @return a child
      */
-    public Solution cross(Solution p1, Solution p2);
+    public List<Solution> cross(Solution p1, Solution p2);
 }

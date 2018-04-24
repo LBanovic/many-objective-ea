@@ -1,5 +1,6 @@
 package hr.fer.zemris.zavrsni.algorithms.operators.selection;
 
+import hr.fer.zemris.zavrsni.algorithms.FitnessObserver;
 import hr.fer.zemris.zavrsni.algorithms.operators.Selection;
 import hr.fer.zemris.zavrsni.algorithms.providers.ValueProvider;
 import hr.fer.zemris.zavrsni.solution.Solution;
@@ -9,13 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class CrowdedTournamentSelection implements Selection {
+public class CrowdedTournamentSelection implements Selection, FitnessObserver {
 
     private ValueProvider<Integer> rankProvider;
     private Map<Solution, Double> crowd;
     private Map<Solution, Integer> ranks;
     private int tournamentSize;
-    private Solution[] oldPopulation;
     private Random rand = new Random();
 
     public CrowdedTournamentSelection(Map<Solution, Double> crowd, int tournamentSize) {
@@ -25,10 +25,6 @@ public class CrowdedTournamentSelection implements Selection {
     }
 
     @Override public Solution select(Solution[] population) {
-        if(oldPopulation != population){
-            oldPopulation = population;
-            rankProvider.provide(ranks);
-        }
         int[] selected = rand.ints(0, population.length).distinct().limit(tournamentSize).toArray();
         int index = 0;
         for(int i = 1; i < selected.length; i++){
@@ -43,5 +39,10 @@ public class CrowdedTournamentSelection implements Selection {
     @SuppressWarnings("unchecked")
     @Override public void initializeValueProviders(ValueProvider... providers) {
         this.rankProvider = (ValueProvider<Integer>) providers[0];
+    }
+
+    @Override
+    public void onFitnessChanged() {
+        rankProvider.provide(ranks);
     }
 }

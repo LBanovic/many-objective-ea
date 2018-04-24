@@ -34,6 +34,9 @@ public class NSGA2TestHarder {
             new NSGA2(population, problem, crossover, mutation, tournamentSize, maxGen, allowRepetition);
 
         nsga2.run();
+
+        MOOPUtils.printParameters(nsga2);
+        System.out.println();
         MOOPUtils.printSolutions(nsga2);
     }
 }

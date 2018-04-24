@@ -13,7 +13,7 @@ import java.util.*;
 
 import static hr.fer.zemris.zavrsni.algorithms.MOOPUtils.mergePopulations;
 
-//TODO pronaci sto nije u redu da ispravim da napokon proradi na dtlz1
+//TODO proradilo, ali crasha u nekim izoliranim slucajevima => sto??
 public class NSGA3 extends AbstractMOOPAlgorithm {
 
     private Random rand = new Random();
@@ -47,7 +47,6 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
         final int numberOfRefPoints = NSGA3Util.getNumberOfReferencePoints(numberOfObjectives, numberOfDivisions);
         List<NSGA3Util.ReferencePoint> points = new ArrayList<>(numberOfRefPoints);
         NSGA3Util.ReferencePoint start = new NSGA3Util.ReferencePoint(new double[numberOfObjectives]);
-        Map<Solution, NSGA3Util.ReferencePoint> association = new HashMap<>();
         while (true) {
             System.out.println("Generation: " + gen);
 
@@ -83,15 +82,13 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
                 St.addAll(currentFront);
 
                 normalize(St);
+                points.clear();
                 NSGA3Util.getReferencePoints(points, start, numberOfObjectives, numberOfDivisions, numberOfDivisions, 0);
 
-                association.clear();
-                double[] distances = new double[St.size()];
-                associate(St, points, distances, association);
+                associate(St, points, currentFront);
 
-                int[] niches = nicheCount(association, points, currentFront);
-                niching(population.length - currentIndex, niches, association, distances,
-                        points, currentFront, newPopulation, currentIndex, St);
+                niching(population.length - currentIndex,
+                        points, currentFront, newPopulation, currentIndex);
             }
             population = newPopulation;
             gen++;
@@ -100,14 +97,14 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
     }
 
     private void normalize(List<Solution> St) {
-        double[] idealPoint = NSGA3Util.findIdealPoint(St, problem.getNumberOfObjectives());
+        double[] idealPoint = NSGA3Util.findIdealPoint(fronts.get(0), problem.getNumberOfObjectives());
         for(Solution sol : St) {
             NSGA3Util.subtractIdealPoint(sol.getObjectives(), idealPoint);
         }
-        Solution[] extremes = NSGA3Util.extremePoints(St, problem.getNumberOfObjectives());
-        double[] hyperplane = NSGA3Util.constructHyperplane(extremes);
+        Solution[] extremes = NSGA3Util.extremePoints(fronts.get(0), problem.getNumberOfObjectives());
+        double[] hyperplane = NSGA3Util.constructHyperplane(extremes, St, idealPoint);
         for (int i = 0; i < problem.getNumberOfObjectives(); i++) {
-            double intercept = NSGA3Util.getIntercept(hyperplane, i) - idealPoint[i];
+            double intercept = NSGA3Util.getIntercept(hyperplane, i);
             for (Solution sol : St) {
                 double[] objectives = sol.getObjectives();
                 objectives[i] /= intercept;
@@ -115,8 +112,7 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
         }
     }
 
-    private void associate(List<Solution> St, List<NSGA3Util.ReferencePoint> referencePoints, double[] distances,
-                           Map<Solution, NSGA3Util.ReferencePoint> association) {
+    private void associate(List<Solution> St, List<NSGA3Util.ReferencePoint> referencePoints, List<Solution> currentFront) {
         for (int k = 0; k < St.size(); k++) {
             double minDistance = Double.MAX_VALUE;
             int index = 0;
@@ -127,69 +123,56 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
                     index = i;
                 }
             }
-            association.put(St.get(k), referencePoints.get(index));
-            distances[k] = minDistance;
+            Solution s = St.get(k);
+            if(!currentFront.contains(s))
+                referencePoints.get(index).addMember(s);
+            else referencePoints.get(index).addPotentialMember(s, minDistance);
         }
     }
 
-    private int[] nicheCount(Map<Solution, NSGA3Util.ReferencePoint> association, List<NSGA3Util.ReferencePoint> referencePoints,
-                             List<Solution> currentFront) {
-        int[] count = new int[referencePoints.size()];
-        for (int i = 0; i < referencePoints.size(); i++) {
-            for (Map.Entry<Solution, NSGA3Util.ReferencePoint> entry : association.entrySet()) {
-                if (entry.getValue() == referencePoints.get(i) && !currentFront.contains(entry.getKey())) count[i]++;
-            }
-        }
-        return count;
-    }
-
-    private void niching(int numberToAdd, int[] nicheCount, Map<Solution, NSGA3Util.ReferencePoint> association,
-                         double[] distances,
+    private void niching(int numberToAdd,
                          List<NSGA3Util.ReferencePoint> points, List<Solution> currentFront,
-                         Solution[] newPopulation, int currentIndex, List<Solution> St) {
+                         Solution[] newPopulation, int currentIndex) {
         int k = 0;
         while (k < numberToAdd) {
-
             List<NSGA3Util.ReferencePoint> Jmin = new LinkedList<>();
             int currentMin = Integer.MAX_VALUE;
-            for (int i = 0; i < nicheCount.length; i++) {
-                if (currentMin > nicheCount[i]) {
-                    currentMin = nicheCount[i];
-                }
+            for (int i = 0; i < points.size(); i++) {
+                currentMin = Math.min(currentMin, points.get(i).getNumberOfMembers());
             }
-            for (int i = 0; i < nicheCount.length; i++) {
-                if (nicheCount[i] == currentMin) Jmin.add(points.get(i));
+            for (int i = 0; i < points.size(); i++) {
+                if (points.get(i).getNumberOfMembers() == currentMin) Jmin.add(points.get(i));
             }
 
-            NSGA3Util.ReferencePoint ref = Jmin.get(rand.nextInt(Jmin.size()));
-
-            List<Solution> I = new LinkedList<>();
-            for (Map.Entry<Solution, NSGA3Util.ReferencePoint> entry : association.entrySet()) {
-                if (entry.getValue().equals(ref) && currentFront.contains(entry.getKey()))
-                    I.add(entry.getKey());
+            NSGA3Util.ReferencePoint ref = null;
+            try {
+                 ref = Jmin.get(rand.nextInt(Jmin.size()));
+            }catch(IllegalArgumentException e){
+                System.out.println(currentMin);
+                System.out.println(currentIndex);
+                System.exit(0);
             }
+            List<Solution> I = new LinkedList<>(ref.getPotentialMembers());
+
             if (I.size() != 0) {
-                if (nicheCount[points.indexOf(ref)] == 0) {
+                Solution next;
+                if (ref.getNumberOfMembers() == 0) {
                     int minIndex = 0;
                     for (int i = 0; i < I.size(); i++) {
-                        if (distances[St.indexOf(I.get(minIndex))] > distances[St.indexOf(I.get(i))]) {
+                        if (ref.getDistance(I.get(minIndex)) > ref.getDistance(I.get(i))) {
                             minIndex = i;
                         }
                     }
-                    newPopulation[currentIndex + k] = I.get(minIndex);
+                    next = I.get(minIndex);
                 } else {
-                    newPopulation[currentIndex + k] = I.get(rand.nextInt(I.size()));
+                    next = I.get(rand.nextInt(I.size()));
                 }
-                nicheCount[points.indexOf(ref)] += 1;
-                currentFront.remove(newPopulation[currentIndex + k]);
+                newPopulation[currentIndex + k] = next;
+                ref.addMember(next);
+                ref.removePotentialMember(next);
+                currentFront.remove(next);
                 k++;
             } else {
-                int[] newNicheCount = new int[nicheCount.length - 1];
-                for (int i = 0; i < newNicheCount.length; i++) {
-                    if (points.indexOf(ref) <= i) newNicheCount[i] = nicheCount[i + 1];
-                    else newNicheCount[i] = nicheCount[i];
-                }
-                nicheCount = newNicheCount;
                 points.remove(ref);
             }
         }

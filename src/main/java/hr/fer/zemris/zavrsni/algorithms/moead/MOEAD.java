@@ -103,7 +103,7 @@ public class MOEAD extends AbstractMOOPAlgorithm {
                 do {
                     index2 = indices[rand.nextInt(indices.length)];
                 } while (index1 == index2);
-                Solution y = crossover.cross(population[index1], population[index2]);
+                Solution y = crossover.cross(population[index1], population[index2]).get(0);
                 mutation.mutate(y);
                 problem.evaluateObjectives(y);
                 double[] obj = y.getObjectives();
@@ -130,7 +130,9 @@ public class MOEAD extends AbstractMOOPAlgorithm {
                         break;
                     }
                 }
-                if(!dominated) externalPopulation.add(y);
+                if(!dominated){
+                    externalPopulation.add(y);
+                }
             }
             gen++;
             if (gen > maxGen) break;

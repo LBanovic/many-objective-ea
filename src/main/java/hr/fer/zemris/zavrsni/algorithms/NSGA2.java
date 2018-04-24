@@ -15,11 +15,11 @@ import java.util.*;
 
 import static hr.fer.zemris.zavrsni.algorithms.MOOPUtils.mergePopulations;
 
-public class NSGA2 extends AbstractMOOPAlgorithm {
+public class NSGA2 extends AbstractMOOPAlgorithm implements FitnessObservable, FitnessObserver {
 
     /*OPERATORS*/
     private Crossover crossover;
-    private Selection selection;
+    private CrowdedTournamentSelection selection;
     private Mutation mutation;
 
     private ValueProvider<Integer> rankProvider;
@@ -30,6 +30,9 @@ public class NSGA2 extends AbstractMOOPAlgorithm {
     /*PARAMETERS*/
     private int maxGen;
     private boolean allowRepetition;
+
+    /*OBSERVERS*/
+    private List<FitnessObserver> observers;
 
     public NSGA2(
             Solution[] population,
@@ -45,19 +48,23 @@ public class NSGA2 extends AbstractMOOPAlgorithm {
         this.mutation = mutation;
         this.maxGen = maxGen;
         this.allowRepetition = allowRepetition;
+        observers = new LinkedList<>();
 
         rankProvider = new RankProvider(this);
         crowdProvider = new CrowdProvider(this);
         crowd = new HashMap<>();
         selection = new CrowdedTournamentSelection(crowd, tournamentSize);
         selection.initializeValueProviders(rankProvider);
+        attachObserver(selection);
+        attachObserver(this);
     }
 
     @Override
     public void run() {
         int gen = 0;
-        Selection binary = new TournamentSelection<Integer>(2, true);
+        TournamentSelection<Integer> binary = new TournamentSelection<>(2, true);
         binary.initializeValueProviders(rankProvider);
+        attachObserver(binary);
         Solution[] childPopulation = null;
         while (true) {
             System.out.println(gen);
@@ -65,13 +72,14 @@ public class NSGA2 extends AbstractMOOPAlgorithm {
             if (gen == 0) {
                 MOOPUtils.evaluatePopulation(population, problem);
                 MOOPUtils.nonDominatedSorting(population, fronts);
+                fitnessChanged();
                 childPopulation = MOOPUtils.createNewPopulation(population, binary, crossover, mutation, allowRepetition);
             } else {
                 Solution[] combined = mergePopulations(population, childPopulation);
                 Solution[] newPopulation = new Solution[population.length];
                 MOOPUtils.evaluatePopulation(combined, problem);
                 MOOPUtils.nonDominatedSorting(combined, fronts);
-                crowdProvider.provide(crowd);
+                fitnessChanged();
                 int i;
                 int currentIndex = 0;
                 for (i = 0; i < fronts.size(); i++) {
@@ -89,5 +97,27 @@ public class NSGA2 extends AbstractMOOPAlgorithm {
             }
             gen++;
         }
+    }
+
+    @Override
+    public void attachObserver(FitnessObserver o) {
+        observers.add(o);
+    }
+
+    @Override
+    public void removeObserver(FitnessObserver o) {
+        observers.remove(o);
+    }
+
+    @Override
+    public void fitnessChanged() {
+        for(FitnessObserver o : observers){
+            o.onFitnessChanged();
+        }
+    }
+
+    @Override
+    public void onFitnessChanged() {
+        crowdProvider.provide(crowd);
     }
 }

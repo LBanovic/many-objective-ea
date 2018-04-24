@@ -37,14 +37,14 @@ public class NSGATest {
         Solution[] population = MOOPUtils.generateRandomPopulation(populationSize, problem);
         Crossover crossover = new BLXAlpha(blxAlpha, problem.getLowerBounds(), problem.getUpperBounds());
         Mutation mutation = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), sigma, mutationChance);
-        Selection selection = new RouletteWheelSelection();
+        RouletteWheelSelection selection = new RouletteWheelSelection();
 
-        AbstractMOOPAlgorithm nsga = new NSGA(population, problem, crossover, selection, mutation, maxGen, allowRepetition,
+        NSGA nsga = new NSGA(population, problem, crossover, selection, mutation, maxGen, allowRepetition,
                                                             epsilon,
                                                             sigmaShare,
                                                             alpha
         );
-
+        nsga.attachObserver(selection);
         nsga.run();
         MOOPUtils.printSolutions(nsga);
     }

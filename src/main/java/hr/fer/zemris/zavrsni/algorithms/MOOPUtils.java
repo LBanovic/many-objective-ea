@@ -11,8 +11,6 @@ import java.util.*;
 public final class MOOPUtils {
 
     private static Random rand = new Random();
-    public static Map<Solution, Double> dummyFitness = new HashMap<>();
-    private static List<List<Solution>> currentFronts = new LinkedList<>();
 
     //So it cannot be instantiated.
     private MOOPUtils() { }
@@ -88,7 +86,6 @@ public final class MOOPUtils {
             }
             fronts.add(solutionFront);
         }
-        currentFronts = fronts;
     }
 
     public static boolean dominates(Solution s1, Solution s2) {
@@ -165,6 +162,12 @@ public final class MOOPUtils {
         }
     }
 
+    public static void printParameters(AbstractMOOPAlgorithm a){
+        for(Solution s: a.getNondominatedSolutions()){
+            System.out.println(s);
+        }
+    }
+
     public static Solution[] createNewPopulation(Solution[] population, Selection selection, Crossover crossover,
                                                     Mutation mutation, boolean allowRepetition){
         Solution[] childPopulation = new Solution[population.length];
@@ -174,8 +177,14 @@ public final class MOOPUtils {
             do {
                 p2 = selection.select(population);
             } while (p2 == p1 && !allowRepetition);
-            childPopulation[i] = crossover.cross(p1, p2);
-            mutation.mutate(childPopulation[i]);
+            List<Solution> children = crossover.cross(p1, p2);
+            for(Solution sol : children){
+                mutation.mutate(sol);
+            }
+            for(int j = i; i - j < children.size() && i < childPopulation.length; i++){
+                childPopulation[i] = children.get(i - j);
+            }
+            i -= 1;
         }
         return childPopulation;
     }

@@ -17,7 +17,7 @@ public class MOEAD_DTLZ1Test {
 
         MOOPProblem problem = new DTLZ1(3);
 
-        int parameterH = 12;
+        int parameterH = 10;
         int closestVectors = 10;
         final int populationSize = MOEADUtil.getSizeOfPopulation(parameterH, problem.getNumberOfObjectives());
         final double blxAlpha = 0.1;

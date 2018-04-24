@@ -4,47 +4,78 @@ import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.solution.Solution;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
+// ----------------------------------------------------------------------
+// The implementation was adapted from the code of function realcross() in crossover.c
+// http://www.iitk.ac.in/kangal/codes/nsga2/nsga2-gnuplot-v1.1.6.tar.gz
+//
+// ref: http://www.slideshare.net/paskorn/simulated-binary-crossover-presentation#
+// ----------------------------------------------------------------------
+
+//TODO izvesti SBX Crossover
 public class SBXCrossover implements Crossover {
 
-    private final int n;
+    private final double eta;
     private double[] lowerBounds;
     private double[] upperBounds;
     private Random rand = new Random();
+    private final static double EPSILON = 1e-6;
 
-
-    public SBXCrossover(int n, double[] lowerBounds, double[] upperBounds){
-        this.n = n;
+    public SBXCrossover(double eta, double[] lowerBounds, double[] upperBounds){
+        this.eta = eta;
         this.lowerBounds = lowerBounds;
         this.upperBounds = upperBounds;
     }
 
-    private double generateBeta(){
-        double u = rand.nextDouble();
-        if (u > 0.5){
-//            u -= 0.5;
-            u = 1 - 2 * u;
-            return Math.pow(u, 1 / (-n - 1.));
+    private double generateBeta(double r, double alpha){
+        double beta;
+        if(r <= 1. / alpha) {
+            beta = Math.pow(r * alpha, 1. / (eta + 1.));
         }
-        return Math.pow(u * 2, 1 / (n + 1.));
+        else{
+            beta = Math.pow(1./ (2. - r * alpha), 1. / (eta + 1.));
+        }
+        return beta;
     }
 
-    @Override public Solution cross(Solution p1, Solution p2) {
+    @Override public List<Solution> cross(Solution p1, Solution p2) {
         double[] h1 = p1.getVariables();
         double[] h2 = p2.getVariables();
-        double[] c1 = new double[h1.length];
-        double[] c2 = new double[h2.length];
-        double beta = generateBeta();
+        double[] c1 = h1.clone();
+        double[] c2 = h2.clone();
         for(int i = 0; i < c1.length; i++){
-            double mean = (h1[i] + h2[i]) / 2;
-            c1[i] = mean - 0.5 * beta * (h2[i] - h1[i]);
-            c2[i] = mean + 0.5 * beta * (h2[i] - h1[i]);
-            c1[i] = MOOPUtils.constrainWithinInterval(c1[i], upperBounds[i], lowerBounds[i]);
-            c2[i] = MOOPUtils.constrainWithinInterval(c2[i], upperBounds[i], lowerBounds[i]);
+            if(rand.nextBoolean()) continue;
+            if(Math.abs(h1[i] - h2[i]) < EPSILON) continue;
+            double y1 = Math.min(h1[i], h2[i]);
+            double y2 = Math.max(h1[i], h2[i]);
+
+            double r = rand.nextDouble();
+
+            //CHILD 1
+            double beta = 1.0 + (2.0*(y1-lowerBounds[i])/(y2-y1)),
+                    alpha = 2.0 - Math.pow(beta, -(eta+1.0));
+            double betaq = generateBeta(r, alpha);
+            c1[i] = 0.5*((y1+y2)-betaq*(y2-y1));
+
+            //CHILD 2
+            beta = 1.0 + (2.0*(upperBounds[i]-y2)/(y2-y1));
+            alpha = 2.0 - Math.pow(beta, -(eta+1.0));
+            betaq = generateBeta(r, alpha);
+            c2[i] = 0.5*((y1+y2)+betaq*(y2-y1));
+
+            c1[i] = MOOPUtils.constrainWithinInterval(c1[i], lowerBounds[i], upperBounds[i]);
+            c2[i] = MOOPUtils.constrainWithinInterval(c2[i], lowerBounds[i], upperBounds[i]);
+
+            if (rand.nextBoolean()){
+                double help = c1[i];
+                c1[i] = c2[i];
+                c2[i] = help;
+            }
         }
-        if(rand.nextBoolean())
-            return new Solution(c1, p1.getObjectives().length);
-        return new Solution(c2, p2.getObjectives().length);
+        return Arrays.asList(new Solution(c1, p1.getObjectives().length),
+                new Solution(c2, p1.getObjectives().length));
     }
 }
