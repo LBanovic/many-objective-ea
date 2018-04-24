@@ -15,7 +15,7 @@ import java.util.Random;
 // ref: http://www.slideshare.net/paskorn/simulated-binary-crossover-presentation#
 // ----------------------------------------------------------------------
 
-//TODO izvesti SBX Crossover
+//TODO pogledati kako radi jer je ovo manje vise ctrl c / ctrl v
 public class SBXCrossover implements Crossover {
 
     private final double eta;
