@@ -28,6 +28,8 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
     private final boolean allowRepetition;
     private final int numberOfDivisions;
 
+    private List<List<Solution>> fronts;
+
     public NSGA3(Solution[] population, MOOPProblem problem, Crossover crossover, Mutation mutation,
                  int maxGen, boolean allowRepetition, int numberOfDivisions) {
         super(population, problem);
@@ -37,6 +39,7 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
         this.allowRepetition = allowRepetition;
         this.numberOfDivisions = numberOfDivisions;
         selection = new RandomSelection();
+        fronts = new LinkedList<>();
     }
 
     @Override
@@ -176,5 +179,10 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
                 points.remove(ref);
             }
         }
+    }
+
+    @Override
+    public List<Solution> getNondominatedSolutions() {
+        return fronts.get(0);
     }
 }

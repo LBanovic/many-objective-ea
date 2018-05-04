@@ -10,7 +10,6 @@ import java.util.List;
 public abstract class AbstractMOOPAlgorithm {
 
     protected Solution[]           population;
-    protected List<List<Solution>> fronts;
     protected MOOPProblem          problem;
 
     public AbstractMOOPAlgorithm(
@@ -19,7 +18,6 @@ public abstract class AbstractMOOPAlgorithm {
     ) {
         this.population = population;
         this.problem = problem;
-        this.fronts = new LinkedList<>();
     }
 
     /**
@@ -27,17 +25,7 @@ public abstract class AbstractMOOPAlgorithm {
      */
     public abstract void run();
 
-    /**
-     * Returns the found Pareto fronts. The fronts are sorted by fitness so the first front is optimal.
-     * @return all found Pareto fronts
-     */
-    public List<List<Solution>> paretoFronts(){
-        return fronts;
-    }
-
-    public List<Solution> getNondominatedSolutions(){
-        return fronts.get(0);
-    }
+    public abstract List<Solution> getNondominatedSolutions();
 
     public int populationSize(){
         return population.length;
