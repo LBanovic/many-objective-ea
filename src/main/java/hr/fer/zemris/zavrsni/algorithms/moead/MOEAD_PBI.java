@@ -1,13 +1,8 @@
 package hr.fer.zemris.zavrsni.algorithms.moead;
 
-import hr.fer.zemris.zavrsni.algorithms.AbstractMOOPAlgorithm;
-import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
-import hr.fer.zemris.zavrsni.algorithms.operators.crossover.BLXAlpha;
-import hr.fer.zemris.zavrsni.algorithms.operators.mutation.NormalDistributionMutation;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
-import hr.fer.zemris.zavrsni.evaluator.examples.DTLZ1;
 import hr.fer.zemris.zavrsni.solution.Solution;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;

@@ -3,6 +3,7 @@ package hr.fer.zemris.zavrsni.algorithms;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.Selection;
+import hr.fer.zemris.zavrsni.algorithms.operators.selection.RouletteWheelSelection;
 import hr.fer.zemris.zavrsni.algorithms.providers.DummyFitnessProvider;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.solution.Solution;
@@ -12,41 +13,35 @@ import java.util.List;
 
 public class NSGA extends AbstractMOOPAlgorithm implements FitnessObservable{
 
-    /*OPERATORS*/
-    private Crossover crossover;
-    private Selection selection;
-    private Mutation  mutation;
-
     /*PARAMETERS*/
-    private int     maxGen;
     private boolean allowRepetition;
 
     /*OBSERVERS*/
     private List<FitnessObserver> observers;
 
+    private RouletteWheelSelection selection;
+
     public NSGA(
-        Solution[] population,
-        MOOPProblem problem,
-        Crossover crossover,
-        Selection selection,
-        Mutation mutation,
-        int maxGen,
-        boolean allowRepetition,
-        double epsilon,
-        double sigmaShare,
-        double alpha
+            Solution[] population,
+            MOOPProblem problem,
+            Crossover crossover,
+            RouletteWheelSelection selection,
+            Mutation mutation,
+            int maxGen,
+            boolean allowRepetition,
+            double epsilon,
+            double sigmaShare,
+            double alpha
     ) {
-        super(population, problem);
-        this.crossover = crossover;
+        super(population, problem, maxGen, crossover, mutation);
         this.selection = selection;
-        this.mutation = mutation;
-        this.maxGen = maxGen;
         this.allowRepetition = allowRepetition;
 
         observers = new LinkedList<>();
 
         selection.initializeValueProviders(new DummyFitnessProvider(problem.getLowerBounds(), problem.getUpperBounds(),
                                                                    epsilon, sigmaShare, alpha, this));
+        attachObserver(selection);
     }
 
     @Override public void run() {

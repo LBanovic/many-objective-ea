@@ -4,7 +4,6 @@ import hr.fer.zemris.zavrsni.algorithms.AbstractMOOPAlgorithm;
 import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
-import hr.fer.zemris.zavrsni.algorithms.operators.Selection;
 import hr.fer.zemris.zavrsni.algorithms.operators.selection.RandomSelection;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.solution.Solution;
@@ -18,22 +17,13 @@ public class NSGA3 extends AbstractMOOPAlgorithm{
 
     private Random rand = new Random();
 
-    //OPERATORS
-    private final Selection selection;
-    private final Crossover crossover;
-    private final Mutation mutation;
-
     /*PARAMETERS*/
-    private final int maxGen;
     private final boolean allowRepetition;
     private final int numberOfDivisions;
 
     public NSGA3(Solution[] population, MOOPProblem problem, Crossover crossover, Mutation mutation,
                  int maxGen, boolean allowRepetition, int numberOfDivisions) {
-        super(population, problem);
-        this.crossover = crossover;
-        this.mutation = mutation;
-        this.maxGen = maxGen;
+        super(population, problem, maxGen, crossover, mutation);
         this.allowRepetition = allowRepetition;
         this.numberOfDivisions = numberOfDivisions;
         selection = new RandomSelection();

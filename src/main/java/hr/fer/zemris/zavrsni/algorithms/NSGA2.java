@@ -17,9 +17,7 @@ import static hr.fer.zemris.zavrsni.algorithms.MOOPUtils.mergePopulations;
 public class NSGA2 extends AbstractMOOPAlgorithm implements FitnessObservable, FitnessObserver {
 
     /*OPERATORS*/
-    private Crossover crossover;
     private CrowdedTournamentSelection selection;
-    private Mutation mutation;
 
     private ValueProvider<Integer> rankProvider;
     private ValueProvider<Double> crowdProvider;
@@ -27,7 +25,6 @@ public class NSGA2 extends AbstractMOOPAlgorithm implements FitnessObservable, F
     private Map<Solution, Double> crowd;
 
     /*PARAMETERS*/
-    private int maxGen;
     private boolean allowRepetition;
 
     /*OBSERVERS*/
@@ -42,10 +39,7 @@ public class NSGA2 extends AbstractMOOPAlgorithm implements FitnessObservable, F
             int maxGen,
             boolean allowRepetition
     ) {
-        super(population, problem);
-        this.crossover = crossover;
-        this.mutation = mutation;
-        this.maxGen = maxGen;
+        super(population, problem, maxGen, crossover, mutation);
         this.allowRepetition = allowRepetition;
         observers = new LinkedList<>();
 

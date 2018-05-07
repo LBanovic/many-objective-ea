@@ -22,17 +22,10 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm {
 
     private double[] idealPoint;
 
-    private final Mutation mutation;
-    private final Crossover crossover;
-    private final int maxGen;
-
     public AbstractMOEAD(Solution[] population, MOOPProblem problem, int closestVectors, int parameterH,
                  Mutation mutation, Crossover crossover, int maxGen) {
-        super(population, problem);
+        super(population, problem, maxGen, crossover, mutation);
 
-        this.mutation = mutation;
-        this.crossover = crossover;
-        this.maxGen = maxGen;
         int numberOfWeights = NSGA3Util.binomialCoefficient(parameterH + problem.getNumberOfObjectives() - 1,
                 problem.getNumberOfObjectives() - 1);
         weights = new double[numberOfWeights][problem.getNumberOfObjectives()];
@@ -150,5 +143,10 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm {
     @Override
     public List<Solution> getNondominatedSolutions() {
         return externalPopulation;
+    }
+
+    @Override
+    public List<List<Solution>> getParetoFronts() {
+        throw new UnsupportedOperationException("This algorithm does not employ non-dominated sorting!");
     }
 }
