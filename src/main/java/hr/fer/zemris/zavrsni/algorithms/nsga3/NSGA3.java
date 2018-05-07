@@ -14,7 +14,7 @@ import java.util.*;
 import static hr.fer.zemris.zavrsni.algorithms.MOOPUtils.mergePopulations;
 
 //TODO proradilo, ali crasha u nekim izoliranim slucajevima => sto??
-public class NSGA3 extends AbstractMOOPAlgorithm {
+public class NSGA3 extends AbstractMOOPAlgorithm{
 
     private Random rand = new Random();
 
@@ -28,8 +28,6 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
     private final boolean allowRepetition;
     private final int numberOfDivisions;
 
-    private List<List<Solution>> fronts;
-
     public NSGA3(Solution[] population, MOOPProblem problem, Crossover crossover, Mutation mutation,
                  int maxGen, boolean allowRepetition, int numberOfDivisions) {
         super(population, problem);
@@ -39,7 +37,6 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
         this.allowRepetition = allowRepetition;
         this.numberOfDivisions = numberOfDivisions;
         selection = new RandomSelection();
-        fronts = new LinkedList<>();
     }
 
     @Override
@@ -81,7 +78,7 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
 
                 List<Solution> currentFront = fronts.get(i);
                 List<Solution> St = new ArrayList<>(currentIndex + currentFront.size());
-                for (int j = 0; j < currentIndex; j++) St.add(newPopulation[j]);
+                St.addAll(Arrays.asList(newPopulation).subList(0, currentIndex));
                 St.addAll(currentFront);
 
                 normalize(St);
@@ -116,20 +113,19 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
     }
 
     private void associate(List<Solution> St, List<NSGA3Util.ReferencePoint> referencePoints, List<Solution> currentFront) {
-        for (int k = 0; k < St.size(); k++) {
+        for (Solution aSt : St) {
             double minDistance = Double.MAX_VALUE;
             int index = 0;
             for (int i = 0; i < referencePoints.size(); i++) {
-                double distance = NSGA3Util.perpendicularDistance(St.get(k), referencePoints.get(i));
+                double distance = NSGA3Util.perpendicularDistance(aSt, referencePoints.get(i));
                 if (minDistance > distance) {
                     minDistance = distance;
                     index = i;
                 }
             }
-            Solution s = St.get(k);
-            if(!currentFront.contains(s))
-                referencePoints.get(index).addMember(s);
-            else referencePoints.get(index).addPotentialMember(s, minDistance);
+            if (!currentFront.contains(aSt))
+                referencePoints.get(index).addMember(aSt);
+            else referencePoints.get(index).addPotentialMember(aSt, minDistance);
         }
     }
 
@@ -140,11 +136,11 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
         while (k < numberToAdd) {
             List<NSGA3Util.ReferencePoint> Jmin = new LinkedList<>();
             int currentMin = Integer.MAX_VALUE;
-            for (int i = 0; i < points.size(); i++) {
-                currentMin = Math.min(currentMin, points.get(i).getNumberOfMembers());
+            for (NSGA3Util.ReferencePoint point : points) {
+                currentMin = Math.min(currentMin, point.getNumberOfMembers());
             }
-            for (int i = 0; i < points.size(); i++) {
-                if (points.get(i).getNumberOfMembers() == currentMin) Jmin.add(points.get(i));
+            for (NSGA3Util.ReferencePoint point : points) {
+                if (point.getNumberOfMembers() == currentMin) Jmin.add(point);
             }
 
             NSGA3Util.ReferencePoint ref = null;
@@ -184,5 +180,10 @@ public class NSGA3 extends AbstractMOOPAlgorithm {
     @Override
     public List<Solution> getNondominatedSolutions() {
         return fronts.get(0);
+    }
+
+    @Override
+    public List<List<Solution>> getParetoFronts() {
+        return fronts;
     }
 }

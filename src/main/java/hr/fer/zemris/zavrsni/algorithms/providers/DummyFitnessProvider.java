@@ -1,6 +1,7 @@
 package hr.fer.zemris.zavrsni.algorithms.providers;
 
 import hr.fer.zemris.zavrsni.algorithms.AbstractMOOPAlgorithm;
+import hr.fer.zemris.zavrsni.algorithms.NSGA;
 import hr.fer.zemris.zavrsni.solution.Solution;
 
 import java.util.*;
@@ -29,12 +30,12 @@ public class DummyFitnessProvider implements ValueProvider<Double> {
 
     public void provide(Map<Solution, Double> dummyFitness){
         double Fmin = moop.populationSize() + epsilon;
-        List<List<Solution>> fronts = moop.paretoFronts();
+        List<List<Solution>> fronts = moop.getParetoFronts();
         for (List<Solution> front : fronts) {
             for (Solution q : front) {
                 dummyFitness.put(q,(Fmin - epsilon) / nicheDensity(q, front));
             }
-            Fmin = dummyFitness.get(Collections.min(front, Comparator.comparingDouble(o -> dummyFitness.get(o))));
+            Fmin = dummyFitness.get(Collections.min(front, Comparator.comparingDouble(dummyFitness::get)));
         }
     }
 

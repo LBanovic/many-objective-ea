@@ -37,10 +37,10 @@ public class EZTest {
         Crossover crossover = new BLXAlpha(alpha, problem.getLowerBounds(), problem.getUpperBounds());
         Mutation mutation = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), mutationChance, sigma);
 
-        AbstractMOOPAlgorithm nsga3 = new NSGA3(population, problem, crossover, mutation, maxGen, allowRepetition, numberOfDivisions);
+        NSGA3 nsga3 = new NSGA3(population, problem, crossover, mutation, maxGen, allowRepetition, numberOfDivisions);
         nsga3.run();
 //        MOOPUtils.printSolutions(nsga3);
-        for (List<Solution> l : nsga3.paretoFronts()){
+        for (List<Solution> l : nsga3.getParetoFronts()){
             for(Solution s : l){
                 System.out.println(Arrays.toString(s.getObjectives()));
             }

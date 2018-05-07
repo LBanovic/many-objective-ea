@@ -5,10 +5,10 @@ import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.solution.Solution;
 
-public class MOEAD extends AbstractMOEAD {
+public class MOEAD_TCH extends AbstractMOEAD {
 
-    public MOEAD(Solution[] population, MOOPProblem problem, int closestVectors,
-                 int parameterH, Mutation mutation, Crossover crossover, int maxGen) {
+    public MOEAD_TCH(Solution[] population, MOOPProblem problem, int closestVectors,
+                     int parameterH, Mutation mutation, Crossover crossover, int maxGen) {
         super(population, problem, closestVectors, parameterH, mutation, crossover, maxGen);
     }
 
@@ -25,6 +25,6 @@ public class MOEAD extends AbstractMOEAD {
 //    public static void main(String[] args) {
 //        MOOPProblem m = new DTLZ1(3);
 //        double[][] weights = new double[351][3];
-//        MOEAD.initializeWeights(m, 25, weights);
+//        MOEAD_TCH.initializeWeights(m, 25, weights);
 //    }
 }

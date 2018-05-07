@@ -46,8 +46,8 @@ public class NSGA3Util {
 
         for (int i = 0; i < zmin.length; i++) {
             zmin[i] = Double.MAX_VALUE;
-            for (int j = 0; j < firstFront.size(); j++) {
-                zmin[i] = Math.min(zmin[i], firstFront.get(j).getObjectives()[i]);
+            for (Solution aFirstFront : firstFront) {
+                zmin[i] = Math.min(zmin[i], aFirstFront.getObjectives()[i]);
             }
         }
         return zmin;
@@ -90,7 +90,7 @@ public class NSGA3Util {
         return extremePoints;
     }
 
-    protected static double[] inverseMaxObjectives(List<Solution> St, double[] idealPoint) {
+    private static double[] inverseMaxObjectives(List<Solution> St, double[] idealPoint) {
         double[] maxPoint = new double[St.get(0).getObjectives().length];
         for (int i = 0; i < maxPoint.length; i++) {
             maxPoint[i] = Double.MIN_VALUE;
@@ -108,8 +108,8 @@ public class NSGA3Util {
 
         boolean duplicate = false;
         for(int i = 0; i < extremes.length && !duplicate; i++){
-            for(int j = 0; j < extremes.length; j++){
-                if(extremes[i] == extremes[j]){
+            for (Solution extreme : extremes) {
+                if (extremes[i] == extreme) {
                     duplicate = true;
                     break;
                 }
@@ -131,8 +131,8 @@ public class NSGA3Util {
             RealVector constants = new ArrayRealVector(allOnes);
             RealVector solution = solver.solve(constants);
             params = solution.toArray();
-            for (int i = 0; i < params.length; i++) {
-                if (params[i] < 0) {
+            for (double param : params) {
+                if (param < 0) {
                     negativeIntercept = true;
                     break;
                 }
@@ -161,11 +161,11 @@ public class NSGA3Util {
 
     protected static class ReferencePoint {
 
-        protected final double[] location;
+        final double[] location;
         private List<Solution> members;
         private Map<Solution, Double> potentialMembers;
 
-        public ReferencePoint(double[] location) {
+        ReferencePoint(double[] location) {
             this.location = location;
             members = new LinkedList<>();
             potentialMembers = new HashMap<>();
@@ -189,10 +189,6 @@ public class NSGA3Util {
 
         public double getDistance(Solution s){
             return potentialMembers.get(s);
-        }
-
-        public List<Solution> getMembers(){
-            return members;
         }
 
         public Set<Solution> getPotentialMembers(){

@@ -5,7 +5,6 @@ import hr.fer.zemris.zavrsni.algorithms.operators.Selection;
 import hr.fer.zemris.zavrsni.algorithms.providers.ValueProvider;
 import hr.fer.zemris.zavrsni.solution.Solution;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;

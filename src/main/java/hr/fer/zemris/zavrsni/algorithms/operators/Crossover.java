@@ -12,5 +12,5 @@ public interface Crossover {
      * @param p2 the second parent
      * @return a child
      */
-    public List<Solution> cross(Solution p1, Solution p2);
+    List<Solution> cross(Solution p1, Solution p2);
 }

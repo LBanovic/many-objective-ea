@@ -24,8 +24,6 @@ public class NSGA extends AbstractMOOPAlgorithm implements FitnessObservable{
     /*OBSERVERS*/
     private List<FitnessObserver> observers;
 
-    private List<List<Solution>> fronts;
-
     public NSGA(
         Solution[] population,
         MOOPProblem problem,
@@ -49,7 +47,6 @@ public class NSGA extends AbstractMOOPAlgorithm implements FitnessObservable{
 
         selection.initializeValueProviders(new DummyFitnessProvider(problem.getLowerBounds(), problem.getUpperBounds(),
                                                                    epsilon, sigmaShare, alpha, this));
-        this.fronts = new LinkedList<>();
     }
 
     @Override public void run() {
@@ -89,5 +86,10 @@ public class NSGA extends AbstractMOOPAlgorithm implements FitnessObservable{
     @Override
     public List<Solution> getNondominatedSolutions() {
         return fronts.get(0);
+    }
+
+    @Override
+    public List<List<Solution>> getParetoFronts() {
+        return fronts;
     }
 }

@@ -15,7 +15,7 @@ public class RankProvider implements ValueProvider<Integer> {
     }
 
     @Override public void provide(Map<Solution, Integer> ranks) {
-        List<List<Solution>> fronts = moop.paretoFronts();
+        List<List<Solution>> fronts = moop.getParetoFronts();
         ranks.clear();
         int i = 0;
         for(List<Solution> l : fronts){

@@ -9,9 +9,9 @@ public interface Selection {
      * @param population population to select from
      * @return index of the selected unit in the population
      */
-    public Solution select(Solution[] population);
+    Solution select(Solution[] population);
 
-    public default void initializeValueProviders(ValueProvider... providers){
+    default void initializeValueProviders(ValueProvider... providers){
 
     }
 }

@@ -15,7 +15,7 @@ public class CrowdProvider implements ValueProvider<Double> {
 
     @Override public void provide(Map<Solution, Double> crowd) {
         crowd.clear();
-        List<List<Solution>> fronts = moop.paretoFronts();
+        List<List<Solution>> fronts = moop.getParetoFronts();
         for(List<Solution> l : fronts){
             Integer[][] objectivesSorted = new Integer[l.get(0).getObjectives().length][l.size()];
             for(int i = 0; i < objectivesSorted.length; i++){

@@ -3,7 +3,6 @@ package hr.fer.zemris.zavrsni.algorithms;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.solution.Solution;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,6 +10,7 @@ public abstract class AbstractMOOPAlgorithm {
 
     protected Solution[]           population;
     protected MOOPProblem          problem;
+    protected List<List<Solution>> fronts;
 
     public AbstractMOOPAlgorithm(
         Solution[] population,
@@ -18,6 +18,7 @@ public abstract class AbstractMOOPAlgorithm {
     ) {
         this.population = population;
         this.problem = problem;
+        fronts = new LinkedList<>();
     }
 
     /**
@@ -29,5 +30,9 @@ public abstract class AbstractMOOPAlgorithm {
 
     public int populationSize(){
         return population.length;
+    }
+
+    public List<List<Solution>> getParetoFronts(){
+        return fronts;
     }
 }

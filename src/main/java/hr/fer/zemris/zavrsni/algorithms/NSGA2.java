@@ -2,7 +2,6 @@ package hr.fer.zemris.zavrsni.algorithms;
 
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
-import hr.fer.zemris.zavrsni.algorithms.operators.Selection;
 import hr.fer.zemris.zavrsni.algorithms.operators.selection.CrowdedTournamentSelection;
 import hr.fer.zemris.zavrsni.algorithms.operators.selection.TournamentSelection;
 import hr.fer.zemris.zavrsni.algorithms.providers.CrowdProvider;
@@ -34,8 +33,6 @@ public class NSGA2 extends AbstractMOOPAlgorithm implements FitnessObservable, F
     /*OBSERVERS*/
     private List<FitnessObserver> observers;
 
-    private List<List<Solution>> fronts;
-
     public NSGA2(
             Solution[] population,
             MOOPProblem problem,
@@ -59,7 +56,6 @@ public class NSGA2 extends AbstractMOOPAlgorithm implements FitnessObservable, F
         selection.initializeValueProviders(rankProvider);
         attachObserver(selection);
         attachObserver(this);
-        this.fronts = new LinkedList<>();
     }
 
     @Override
@@ -128,5 +124,10 @@ public class NSGA2 extends AbstractMOOPAlgorithm implements FitnessObservable, F
     @Override
     public List<Solution> getNondominatedSolutions() {
         return fronts.get(0);
+    }
+
+    @Override
+    public List<List<Solution>> getParetoFronts() {
+        return fronts;
     }
 }

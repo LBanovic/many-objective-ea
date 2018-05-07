@@ -7,5 +7,5 @@ public interface Mutation {
      * Mutates a Solution according to the implemented strategy.
      * @param child Solution to mutate
      */
-    public void mutate(Solution child);
+    void mutate(Solution child);
 }
