@@ -6,30 +6,27 @@ import hr.fer.zemris.zavrsni.algorithms.operators.Selection;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.solution.Solution;
 
-import java.util.LinkedList;
 import java.util.List;
 
-public abstract class AbstractMOOPAlgorithm {
+public abstract class AbstractMOOPAlgorithm<T extends Solution> {
 
-    protected Solution[]           population;
-    protected MOOPProblem          problem;
-    protected List<List<Solution>> fronts;
+    protected List<T> population;
+    protected MOOPProblem problem;
     protected final int maxGen;
-    protected final Crossover crossover;
+    protected final Crossover<T> crossover;
     protected final Mutation mutation;
 
-    protected Selection selection;
+    protected Selection<T> selection;
 
     public AbstractMOOPAlgorithm(
-            Solution[] population,
+            List<T> population,
             MOOPProblem problem,
             int maxGen,
-            Crossover crossover,
+            Crossover<T> crossover,
             Mutation mutation) {
         this.population = population;
         this.problem = problem;
         this.maxGen = maxGen;
-        fronts = new LinkedList<>();
         this.crossover = crossover;
         this.mutation = mutation;
     }
@@ -39,15 +36,17 @@ public abstract class AbstractMOOPAlgorithm {
      */
     public abstract void run();
 
-    public abstract List<Solution> getNondominatedSolutions();
+    public abstract List<T> getNondominatedSolutions();
 
-    public int populationSize(){
-        return population.length;
+    public int populationSize() {
+        return population.size();
     }
 
-    public List<List<Solution>> getParetoFronts(){
-        return fronts;
+    public List<T> getPopulation() {
+        return population;
     }
 
-    public Solution[] getPopulation(){return population;}
+    public List<List<T>> getParetoFronts() {
+        throw new UnsupportedOperationException("This algorithm does not employ non-dominated sorting!");
+    }
 }

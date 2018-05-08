@@ -1,22 +1,19 @@
 package hr.fer.zemris.zavrsni.algorithms.providers;
 
 import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
+import hr.fer.zemris.zavrsni.solution.FitnessSolution;
 import hr.fer.zemris.zavrsni.solution.Solution;
 
 import java.util.*;
 
 public class SPEAFitnessProvider implements ValueProvider<Double> {
 
-    private Map<Solution, Double> fitnessMap;
-
     @Override
-    public void provide(Map<Solution, Double> map, List<Solution> solutions) {
-        fitnessMap = map;
+    public void provide(List<FitnessSolution<Double>> solutions) {
         int k = (int) Math.sqrt(solutions.size());
 
-        map.clear();
-
         Map<Solution, List<Solution>> dominators = new HashMap<>();
+        Map<Solution, Double> map = new HashMap<>(solutions.size());
 
         //Strength value
         for(Solution s : solutions){
@@ -50,17 +47,11 @@ public class SPEAFitnessProvider implements ValueProvider<Double> {
                 }
             }
             Collections.sort(distances);
-            Solution s = solutions.get(n);
+            FitnessSolution<Double> s = solutions.get(n);
             double density = 1. / (distances.get(k) + 2);
             double current = map.get(s);
-            map.put(s, current + density);
+            s.setFitness(current + density);
         }
-    }
-
-    @Override
-    public void provide(Map<Solution, Double> map) {
-        map.clear();
-        map.putAll(fitnessMap);
     }
 
     private double calculateDistance(Solution s, Solution t) {

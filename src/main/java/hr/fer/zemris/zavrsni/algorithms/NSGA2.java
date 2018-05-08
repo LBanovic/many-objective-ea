@@ -8,32 +8,33 @@ import hr.fer.zemris.zavrsni.algorithms.providers.CrowdProvider;
 import hr.fer.zemris.zavrsni.algorithms.providers.RankProvider;
 import hr.fer.zemris.zavrsni.algorithms.providers.ValueProvider;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
-import hr.fer.zemris.zavrsni.solution.Solution;
+import hr.fer.zemris.zavrsni.solution.FitnessSolution;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 
 import static hr.fer.zemris.zavrsni.algorithms.MOOPUtils.mergePopulations;
 
-public class NSGA2 extends AbstractMOOPAlgorithm implements FitnessObservable, FitnessObserver {
+public class NSGA2 extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
 
     /*OPERATORS*/
     private CrowdedTournamentSelection selection;
 
-    private ValueProvider<Integer> rankProvider;
+    private ValueProvider<Double> rankProvider;
     private ValueProvider<Double> crowdProvider;
-
-    private Map<Solution, Double> crowd;
 
     /*PARAMETERS*/
     private boolean allowRepetition;
 
-    /*OBSERVERS*/
-    private List<FitnessObserver> observers;
+    private List<List<FitnessSolution<Double>>> fronts;
 
+    @SuppressWarnings("unchecked")
     public NSGA2(
-            Solution[] population,
+            List<FitnessSolution<Double>> population,
             MOOPProblem problem,
-            Crossover crossover,
+            Crossover<FitnessSolution<Double>> crossover,
             Mutation mutation,
             int tournamentSize,
             int maxGen,
@@ -41,49 +42,44 @@ public class NSGA2 extends AbstractMOOPAlgorithm implements FitnessObservable, F
     ) {
         super(population, problem, maxGen, crossover, mutation);
         this.allowRepetition = allowRepetition;
-        observers = new LinkedList<>();
-
-        rankProvider = new RankProvider(this);
         crowdProvider = new CrowdProvider(this);
-        crowd = new HashMap<>();
-        selection = new CrowdedTournamentSelection(crowd, tournamentSize);
-        selection.initializeValueProviders(rankProvider);
-        attachObserver(selection);
-        attachObserver(this);
+        rankProvider = new RankProvider<>( this);
+        selection = new CrowdedTournamentSelection(this, tournamentSize);
+        fronts = new LinkedList<>();
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void run() {
         int gen = 0;
-        TournamentSelection<Integer> binary = new TournamentSelection<>(2, true);
-        binary.initializeValueProviders(rankProvider);
-        attachObserver(binary);
-        Solution[] childPopulation = null;
+        TournamentSelection<Double> binary = new TournamentSelection<>(2, true);
+
+        List<FitnessSolution<Double>> childPopulation = null;
         while (true) {
             System.out.println(gen);
             if (gen >= maxGen) break;
             if (gen == 0) {
                 MOOPUtils.evaluatePopulation(population, problem);
                 MOOPUtils.nonDominatedSorting(population, fronts);
-                fitnessChanged();
+                rankProvider.provide(population);
                 childPopulation = MOOPUtils.createNewPopulation(population, binary, crossover, mutation, allowRepetition);
             } else {
-                Solution[] combined = mergePopulations(population, childPopulation);
-                Solution[] newPopulation = new Solution[population.length];
+                List<FitnessSolution<Double>> combined = mergePopulations(population, childPopulation);
+                List<FitnessSolution<Double>> newPopulation = new ArrayList<>(population.size());
                 MOOPUtils.evaluatePopulation(combined, problem);
                 MOOPUtils.nonDominatedSorting(combined, fronts);
-                fitnessChanged();
                 int i;
-                int currentIndex = 0;
                 for (i = 0; i < fronts.size(); i++) {
-                    List<Solution> l = fronts.get(i);
-                    if (currentIndex + l.size() < population.length) {
-                        for (Solution s : l) newPopulation[currentIndex++] = s;
+                    List<FitnessSolution<Double>> l = fronts.get(i);
+                    if (newPopulation.size() + l.size() < population.size()) {
+                        newPopulation.addAll(l);
                     } else break;
                 }
-                fronts.get(i).sort(Comparator.comparingDouble(o -> crowd.get(o)));
-                for (int j = currentIndex; j < population.length; j++) {
-                    newPopulation[j] = fronts.get(i).get(j - currentIndex);
+                crowdProvider.provide(population);
+                fronts.get(i).sort(Comparator.naturalOrder());
+                int size = newPopulation.size();
+                for (int j = size; j < population.size(); j++) {
+                    newPopulation.add(fronts.get(i).get(j - size));
                 }
                 population = newPopulation;
                 childPopulation = MOOPUtils.createNewPopulation(population, selection, crossover, mutation, allowRepetition);
@@ -93,35 +89,12 @@ public class NSGA2 extends AbstractMOOPAlgorithm implements FitnessObservable, F
     }
 
     @Override
-    public void attachObserver(FitnessObserver o) {
-        observers.add(o);
-    }
-
-    @Override
-    public void removeObserver(FitnessObserver o) {
-        observers.remove(o);
-    }
-
-    @Override
-    public void fitnessChanged() {
-        for(FitnessObserver o : observers){
-            o.onFitnessChanged();
-        }
-    }
-
-    @Override
-    public void onFitnessChanged() {
-        crowdProvider.provide(crowd);
-    }
-
-
-    @Override
-    public List<Solution> getNondominatedSolutions() {
+    public List<FitnessSolution<Double>> getNondominatedSolutions() {
         return fronts.get(0);
     }
 
     @Override
-    public List<List<Solution>> getParetoFronts() {
+    public List<List<FitnessSolution<Double>>> getParetoFronts() {
         return fronts;
     }
 }

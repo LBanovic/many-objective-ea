@@ -4,7 +4,9 @@ import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.Selection;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
+import hr.fer.zemris.zavrsni.solution.FitnessSolution;
 import hr.fer.zemris.zavrsni.solution.Solution;
+import hr.fer.zemris.zavrsni.solution.SolutionFactory;
 
 import java.util.*;
 
@@ -13,7 +15,8 @@ public final class MOOPUtils {
     private static Random rand = new Random();
 
     //So it cannot be instantiated.
-    private MOOPUtils() { }
+    private MOOPUtils() {
+    }
 
     /**
      * Evaluates all objectives for every unit in the population.
@@ -21,7 +24,7 @@ public final class MOOPUtils {
      * @param solutions the population to evaluate
      * @param problem   the MOOPProblem used to evaluate
      */
-    public static void evaluatePopulation(Solution[] solutions, MOOPProblem problem) {
+    public static <T extends Solution> void evaluatePopulation(List<T> solutions, MOOPProblem problem) {
         for (Solution solution : solutions) {
             problem.evaluateObjectives(solution);
         }
@@ -35,23 +38,25 @@ public final class MOOPUtils {
      * @param population
      * @param fronts
      */
-    public static void nonDominatedSorting(Solution[] population, List<List<Solution>> fronts) {
-        double[]        dominatedBy   = new double[population.length];
-        List<Integer>[] dominatesOver = (List<Integer>[]) new LinkedList[population.length];
+    @SuppressWarnings("unchecked")
+    public static <T extends Solution> void nonDominatedSorting(List<T> population,
+                                                                List<List<T>> fronts) {
+        double[] dominatedBy = new double[population.size()];
+        List<Integer>[] dominatesOver = (List<Integer>[]) new LinkedList[population.size()];
         fronts.clear();
 
         List<List<Integer>> indexFronts = new LinkedList<>();
-        List<Integer>       firstFront  = new LinkedList<>();
+        List<Integer> firstFront = new LinkedList<>();
         indexFronts.add(firstFront);
 
-        for (int i = 0; i < population.length; i++) {
+        for (int i = 0; i < population.size(); i++) {
             dominatedBy[i] = 0;
             dominatesOver[i] = new LinkedList<>();
-            for (int j = 0; j < population.length; j++) {
+            for (int j = 0; j < population.size(); j++) {
                 if (i != j) {
-                    if (dominates(population[i], population[j])) {
+                    if (dominates(population.get(i), population.get(j))) {
                         dominatesOver[i].add(j);
-                    } else if (dominates(population[j], population[i])) {
+                    } else if (dominates(population.get(j), population.get(i))) {
                         dominatedBy[i]++;
                     }
                 }
@@ -80,15 +85,15 @@ public final class MOOPUtils {
         }
 
         for (List<Integer> front : indexFronts) {
-            List<Solution> solutionFront = new ArrayList<>(front.size());
+            List<T> solutionFront = new ArrayList<>(front.size());
             for (int i : front) {
-                solutionFront.add(population[i]);
+                solutionFront.add(population.get(i));
             }
             fronts.add(solutionFront);
         }
     }
 
-    public static boolean dominates(Solution s1, Solution s2) {
+    public static <T extends Solution> boolean dominates(T s1, T s2) {
         double[] obj1 = s1.getObjectives();
         double[] obj2 = s2.getObjectives();
 
@@ -136,65 +141,65 @@ public final class MOOPUtils {
      * @param numberOfObjectives
      * @return
      */
-    public static Solution[] generateRandomPopulation(
-        int populationSize, double[] lowerBounds, double[] upperBounds,
-        int numberOfVariables, int numberOfObjectives
+    public static <T extends Solution> List<T> generateRandomPopulation(
+            int populationSize, double[] lowerBounds, double[] upperBounds,
+            int numberOfVariables, int numberOfObjectives, SolutionFactory<T> factory
     ) {
-        Solution[] population = new Solution[populationSize];
+        List<T> population = new ArrayList<>(populationSize);
         for (int i = 0; i < populationSize; i++) {
             double[] varArray = new double[numberOfVariables];
             for (int j = 0; j < varArray.length; j++) {
                 varArray[j] = rand.nextDouble() * (upperBounds[j] - lowerBounds[j]) + lowerBounds[j];
             }
-            population[i] = new Solution(varArray, numberOfObjectives);
+            population.add(factory.create(varArray, numberOfObjectives));
         }
         return population;
     }
 
-    public static Solution[] generateRandomPopulation(int populationSize, MOOPProblem problem){
+    public static <T extends Solution> List<T> generateRandomPopulation(int populationSize, MOOPProblem problem,
+                                                                        SolutionFactory<T> factory) {
         return generateRandomPopulation(populationSize, problem.getLowerBounds(), problem.getUpperBounds(),
-                problem.getNumberOfVariables(), problem.getNumberOfObjectives());
+                problem.getNumberOfVariables(), problem.getNumberOfObjectives(), factory);
     }
 
-    public static void printSolutions(AbstractMOOPAlgorithm a){
-        for (Solution s : a.getNondominatedSolutions()){
+    public static <T extends Solution> void printSolutions(AbstractMOOPAlgorithm<T> a) {
+        for (T s : a.getNondominatedSolutions()) {
             System.out.println(Arrays.toString(s.getObjectives()));
         }
     }
 
-    public static void printParameters(AbstractMOOPAlgorithm a){
-        for(Solution s: a.getNondominatedSolutions()){
+    public static <T extends Solution> void printParameters(AbstractMOOPAlgorithm<T> a) {
+        for (Solution s : a.getNondominatedSolutions()) {
             System.out.println(s);
         }
     }
 
-    public static Solution[] createNewPopulation(Solution[] population, Selection selection, Crossover crossover,
-                                                    Mutation mutation, boolean allowRepetition){
-        Solution[] childPopulation = new Solution[population.length];
-        for (int i = 0; i < childPopulation.length; i++) {
-            Solution p1 = selection.select(population);
-            Solution p2;
+    public static <T extends Solution> List<T> createNewPopulation(List<T> population, Selection<T> selection, Crossover<T> crossover,
+                                                                   Mutation mutation, boolean allowRepetition) {
+        List<T> childPopulation = new ArrayList<>(population.size());
+        while (childPopulation.size() < population.size()) {
+            T p1 = selection.select(population);
+            T p2;
             do {
                 p2 = selection.select(population);
             } while (p2 == p1 && !allowRepetition);
-            List<Solution> children = crossover.cross(p1, p2);
-            for(Solution sol : children){
+            List<T> children = crossover.cross(p1, p2);
+            for (Solution sol : children) {
                 mutation.mutate(sol);
             }
-            for(int j = i; i - j < children.size() && i < childPopulation.length; i++){
-                childPopulation[i] = children.get(i - j);
+            for (T child : children) {
+                if(!childPopulation.contains(child)) childPopulation.add(child);
             }
-            i -= 1;
+        }
+        for (int i = population.size(); i < childPopulation.size(); i++) {
+            childPopulation.remove(i);
         }
         return childPopulation;
     }
 
-    public static Solution[] mergePopulations(Solution[] population, Solution[] childPopulation){
-        Solution[] combined = new Solution[population.length + childPopulation.length];
-        for (int i = 0; i < combined.length; i++) {
-            if (i < population.length) combined[i] = population[i];
-            else combined[i] = childPopulation[i - population.length];
-        }
+    public static <T extends Solution> List<T> mergePopulations(List<T> population, List<T> childPopulation) {
+        List<T> combined = new ArrayList<>(population);
+        combined.addAll(childPopulation);
         return combined;
     }
 }

@@ -13,7 +13,7 @@ import java.util.*;
 import static hr.fer.zemris.zavrsni.algorithms.MOOPUtils.mergePopulations;
 
 //TODO proradilo, ali crasha u nekim izoliranim slucajevima => sto??
-public class NSGA3 extends AbstractMOOPAlgorithm{
+public class NSGA3 extends AbstractMOOPAlgorithm<Solution>{
 
     private Random rand = new Random();
 
@@ -21,18 +21,21 @@ public class NSGA3 extends AbstractMOOPAlgorithm{
     private final boolean allowRepetition;
     private final int numberOfDivisions;
 
-    public NSGA3(Solution[] population, MOOPProblem problem, Crossover crossover, Mutation mutation,
+    private List<List<Solution>> fronts;
+
+    public NSGA3(List<Solution> population, MOOPProblem problem, Crossover<Solution> crossover, Mutation mutation,
                  int maxGen, boolean allowRepetition, int numberOfDivisions) {
         super(population, problem, maxGen, crossover, mutation);
         this.allowRepetition = allowRepetition;
         this.numberOfDivisions = numberOfDivisions;
         selection = new RandomSelection();
+        fronts = new LinkedList<>();
     }
 
     @Override
     public void run() {
         int gen = 0;
-        Solution[] childPopulation;
+        List<Solution> childPopulation;
         int numberOfObjectives = problem.getNumberOfObjectives();
         final int numberOfRefPoints = NSGA3Util.getNumberOfReferencePoints(numberOfObjectives, numberOfDivisions);
         List<NSGA3Util.ReferencePoint> points = new ArrayList<>(numberOfRefPoints);
@@ -48,27 +51,25 @@ public class NSGA3 extends AbstractMOOPAlgorithm{
 
             childPopulation = MOOPUtils.createNewPopulation(population, selection, crossover, mutation, allowRepetition);
 
-            Solution[] combined = mergePopulations(population, childPopulation);
-            Solution[] newPopulation = new Solution[population.length];
+            List<Solution> combined = mergePopulations(population, childPopulation);
+            List<Solution> newPopulation = new ArrayList<>(population.size());
 
             MOOPUtils.evaluatePopulation(combined, problem);
             MOOPUtils.nonDominatedSorting(combined, fronts);
 
             int i;
-            int currentIndex = 0;
             for (i = 0; i < fronts.size(); i++) {
                 List<Solution> l = fronts.get(i);
-                if (currentIndex + l.size() <= population.length) {
-                    for (Solution s : l) newPopulation[currentIndex++] = s;
+                if (newPopulation.size() + l.size() <= population.size()) {
+                    newPopulation.addAll(l);
                 } else break;
             }
 
-            if (currentIndex != newPopulation.length) {
+            if (newPopulation.size() != population.size()) {
                 //ako nova populacija nije popunjena
 
                 List<Solution> currentFront = fronts.get(i);
-                List<Solution> St = new ArrayList<>(currentIndex + currentFront.size());
-                St.addAll(Arrays.asList(newPopulation).subList(0, currentIndex));
+                List<Solution> St = new ArrayList<>(newPopulation);
                 St.addAll(currentFront);
 
                 normalize(St);
@@ -77,8 +78,8 @@ public class NSGA3 extends AbstractMOOPAlgorithm{
 
                 associate(St, points, currentFront);
 
-                niching(population.length - currentIndex,
-                        points, currentFront, newPopulation, currentIndex);
+                niching(population.size() - newPopulation.size(),
+                        points, currentFront, newPopulation);
             }
             population = newPopulation;
             gen++;
@@ -121,7 +122,7 @@ public class NSGA3 extends AbstractMOOPAlgorithm{
 
     private void niching(int numberToAdd,
                          List<NSGA3Util.ReferencePoint> points, List<Solution> currentFront,
-                         Solution[] newPopulation, int currentIndex) {
+                         List<Solution> newPopulation) {
         int k = 0;
         while (k < numberToAdd) {
             List<NSGA3Util.ReferencePoint> Jmin = new LinkedList<>();
@@ -138,7 +139,7 @@ public class NSGA3 extends AbstractMOOPAlgorithm{
                  ref = Jmin.get(rand.nextInt(Jmin.size()));
             }catch(IllegalArgumentException e){
                 System.out.println(currentMin);
-                System.out.println(currentIndex);
+                System.out.println(newPopulation.size());
                 System.exit(0);
             }
             List<Solution> I = new LinkedList<>(ref.getPotentialMembers());
@@ -156,7 +157,7 @@ public class NSGA3 extends AbstractMOOPAlgorithm{
                 } else {
                     next = I.get(rand.nextInt(I.size()));
                 }
-                newPopulation[currentIndex + k] = next;
+                newPopulation.add(next);
                 ref.addMember(next);
                 ref.removePotentialMember(next);
                 currentFront.remove(next);

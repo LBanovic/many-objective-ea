@@ -10,7 +10,7 @@ import hr.fer.zemris.zavrsni.solution.Solution;
 
 import java.util.*;
 
-public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm {
+public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
 
     private final double[][] weights;
 
@@ -22,8 +22,8 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm {
 
     private double[] idealPoint;
 
-    public AbstractMOEAD(Solution[] population, MOOPProblem problem, int closestVectors, int parameterH,
-                 Mutation mutation, Crossover crossover, int maxGen) {
+    public AbstractMOEAD(List<Solution> population, MOOPProblem problem, int closestVectors, int parameterH,
+                 Mutation mutation, Crossover<Solution> crossover, int maxGen) {
         super(population, problem, maxGen, crossover, mutation);
 
         int numberOfWeights = NSGA3Util.binomialCoefficient(parameterH + problem.getNumberOfObjectives() - 1,
@@ -57,7 +57,7 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm {
         this.idealPoint = new double[problem.getNumberOfObjectives()];
         for (int i = 0; i < idealPoint.length; i++) {
             final int k = i;
-            idealPoint[i] = Collections.max(Arrays.asList(population), Comparator.comparingDouble(o -> o.getObjectives()[k])).getObjectives()[i];
+            idealPoint[i] = Collections.max(population, Comparator.comparingDouble(o -> o.getObjectives()[k])).getObjectives()[i];
         }
     }
 
@@ -87,14 +87,14 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm {
         int gen = 0;
         while (true) {
             System.out.println(gen);
-            for (int i = 0; i < population.length; i++) {
+            for (int i = 0; i < population.size(); i++) {
                 int[] indices = neighbourhoods.get(i);
                 int index1, index2;
                 index1 = indices[rand.nextInt(indices.length)];
                 do {
                     index2 = indices[rand.nextInt(indices.length)];
                 } while (index1 == index2);
-                Solution y = crossover.cross(population[index1], population[index2]).get(0);
+                Solution y = crossover.cross(population.get(index1), population.get(index2)).get(0);
                 mutation.mutate(y);
                 problem.evaluateObjectives(y);
                 double[] obj = y.getObjectives();
@@ -103,8 +103,8 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm {
                 }
                 for (int j : indices) {
                     if(scalarizationFunction(y, weights[j], idealPoint) <=
-                            scalarizationFunction(population[j], weights[j], idealPoint)){
-                        population[j] = y;
+                            scalarizationFunction(population.get(j), weights[j], idealPoint)){
+                        population.set(j, y);
                     }
                 }
                 for(int j = 0; j < externalPopulation.size(); j++){

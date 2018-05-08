@@ -10,7 +10,11 @@ import hr.fer.zemris.zavrsni.algorithms.operators.crossover.BLXAlpha;
 import hr.fer.zemris.zavrsni.algorithms.operators.mutation.NormalDistributionMutation;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.evaluator.examples.DTLZ1;
+import hr.fer.zemris.zavrsni.solution.RegularSolutionFactory;
 import hr.fer.zemris.zavrsni.solution.Solution;
+import hr.fer.zemris.zavrsni.solution.SolutionFactory;
+
+import java.util.List;
 
 public class MOEAD_TCH_DTLZ1Test {
     public static void main(String[] args) {
@@ -27,11 +31,13 @@ public class MOEAD_TCH_DTLZ1Test {
         final int maxGen = 1000;
 
 
-        Solution[] population = MOOPUtils.generateRandomPopulation(populationSize, problem);
-        Crossover crossover = new BLXAlpha(blxAlpha, problem.getLowerBounds(), problem.getUpperBounds());
+        SolutionFactory<Solution> s = new RegularSolutionFactory();
+
+        List<Solution> population = MOOPUtils.generateRandomPopulation(populationSize, problem, s);
+        Crossover<Solution> crossover = new BLXAlpha<>(s, blxAlpha, problem.getLowerBounds(), problem.getUpperBounds());
         Mutation mutation = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), sigma, mutationChance);
 
-        AbstractMOOPAlgorithm moead = new MOEAD_TCH(population, problem, closestVectors, parameterH, mutation, crossover, maxGen);
+        AbstractMOOPAlgorithm<Solution> moead = new MOEAD_TCH(population, problem, closestVectors, parameterH, mutation, crossover, maxGen);
 
         moead.run();
         MOOPUtils.printSolutions(moead);

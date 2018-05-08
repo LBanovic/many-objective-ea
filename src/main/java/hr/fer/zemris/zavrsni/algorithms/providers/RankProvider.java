@@ -1,26 +1,26 @@
 package hr.fer.zemris.zavrsni.algorithms.providers;
 
 import hr.fer.zemris.zavrsni.algorithms.AbstractMOOPAlgorithm;
-import hr.fer.zemris.zavrsni.solution.Solution;
+import hr.fer.zemris.zavrsni.solution.FitnessSolution;
 
 import java.util.List;
-import java.util.Map;
 
-public class RankProvider implements ValueProvider<Integer> {
+public class RankProvider<T extends Number> implements ValueProvider<T> {
 
-    private AbstractMOOPAlgorithm moop;
+    private AbstractMOOPAlgorithm<FitnessSolution<T>> moop;
 
-    public RankProvider(AbstractMOOPAlgorithm moop) {
+    public RankProvider(AbstractMOOPAlgorithm<FitnessSolution<T>> moop) {
         this.moop = moop;
     }
 
-    @Override public void provide(Map<Solution, Integer> ranks) {
-        List<List<Solution>> fronts = moop.getParetoFronts();
-        ranks.clear();
+    @Override
+    @SuppressWarnings("unchecked")
+    public void provide(List<FitnessSolution<T>> population) {
+        List<List<FitnessSolution<T>>> fronts = moop.getParetoFronts();
         int i = 0;
-        for(List<Solution> l : fronts){
-            for(Solution s: l){
-                ranks.put(s, i);
+        for(List<FitnessSolution<T>> f : fronts){
+            for(FitnessSolution s : f){
+                s.setFitness(i);
             }
             i++;
         }

@@ -10,8 +10,6 @@ public class DTLZ1 extends MOOPProblem {
 
     private int k;
 
-    //TODO dojava koliko treba varijabli
-
     /**
      * Constructs a new DTLZ1 optimization problem.
      *

@@ -3,6 +3,7 @@ package hr.fer.zemris.zavrsni.algorithms.operators.crossover;
 import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.solution.Solution;
+import hr.fer.zemris.zavrsni.solution.SolutionFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.Random;
 // ----------------------------------------------------------------------
 
 //TODO pogledati kako radi jer je ovo manje vise ctrl c / ctrl v
-public class SBXCrossover implements Crossover {
+public class SBXCrossover<T extends Solution> extends Crossover<T> {
 
     private final double eta;
     private double[] lowerBounds;
@@ -24,7 +25,8 @@ public class SBXCrossover implements Crossover {
     private Random rand = new Random();
     private final static double EPSILON = 1e-6;
 
-    public SBXCrossover(double eta, double[] lowerBounds, double[] upperBounds){
+    public SBXCrossover(SolutionFactory<T> factory, double eta, double[] lowerBounds, double[] upperBounds) {
+        super(factory);
         this.eta = eta;
         this.lowerBounds = lowerBounds;
         this.upperBounds = upperBounds;
@@ -41,7 +43,7 @@ public class SBXCrossover implements Crossover {
         return beta;
     }
 
-    @Override public List<Solution> cross(Solution p1, Solution p2) {
+    @Override public List<T> cross(T p1, T p2) {
         double[] h1 = p1.getVariables();
         double[] h2 = p2.getVariables();
         double[] c1 = h1.clone();
@@ -75,7 +77,7 @@ public class SBXCrossover implements Crossover {
                 c2[i] = help;
             }
         }
-        return Arrays.asList(new Solution(c1, p1.getObjectives().length),
-                new Solution(c2, p1.getObjectives().length));
+        return Arrays.asList(factory.create(c1, p1.getObjectives().length),
+                factory.create(c2, p1.getObjectives().length));
     }
 }

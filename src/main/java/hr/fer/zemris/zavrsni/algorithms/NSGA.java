@@ -3,29 +3,27 @@ package hr.fer.zemris.zavrsni.algorithms;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.Selection;
-import hr.fer.zemris.zavrsni.algorithms.operators.selection.RouletteWheelSelection;
 import hr.fer.zemris.zavrsni.algorithms.providers.DummyFitnessProvider;
+import hr.fer.zemris.zavrsni.algorithms.providers.ValueProvider;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
-import hr.fer.zemris.zavrsni.solution.Solution;
+import hr.fer.zemris.zavrsni.solution.FitnessSolution;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class NSGA extends AbstractMOOPAlgorithm implements FitnessObservable{
+public class NSGA extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
 
     /*PARAMETERS*/
     private boolean allowRepetition;
 
-    /*OBSERVERS*/
-    private List<FitnessObserver> observers;
+    private ValueProvider<Double> provider;
 
-    private RouletteWheelSelection selection;
-
+    private List<List<FitnessSolution<Double>>> fronts;
     public NSGA(
-            Solution[] population,
+            List<FitnessSolution<Double>> population,
             MOOPProblem problem,
-            Crossover crossover,
-            RouletteWheelSelection selection,
+            Crossover<FitnessSolution<Double>> crossover,
+            Selection<FitnessSolution<Double>> selection,
             Mutation mutation,
             int maxGen,
             boolean allowRepetition,
@@ -36,12 +34,9 @@ public class NSGA extends AbstractMOOPAlgorithm implements FitnessObservable{
         super(population, problem, maxGen, crossover, mutation);
         this.selection = selection;
         this.allowRepetition = allowRepetition;
-
-        observers = new LinkedList<>();
-
-        selection.initializeValueProviders(new DummyFitnessProvider(problem.getLowerBounds(), problem.getUpperBounds(),
-                                                                   epsilon, sigmaShare, alpha, this));
-        attachObserver(selection);
+        provider = new DummyFitnessProvider(problem.getLowerBounds(), problem.getUpperBounds(),
+                                                                   epsilon, sigmaShare, alpha, this);
+        fronts = new LinkedList<>();
     }
 
     @Override public void run() {
@@ -50,41 +45,23 @@ public class NSGA extends AbstractMOOPAlgorithm implements FitnessObservable{
         while (true) {
             MOOPUtils.evaluatePopulation(population, problem);
             MOOPUtils.nonDominatedSorting(population, fronts);
-            fitnessChanged();
             System.out.println(gen);
             if (gen >= maxGen) {
                 break;
             }
-
+            provider.provide(population);
             population = MOOPUtils.createNewPopulation(population, selection, crossover, mutation, allowRepetition);
             gen++;
         }
     }
 
     @Override
-    public void attachObserver(FitnessObserver o) {
-        observers.add(o);
-    }
-
-    @Override
-    public void removeObserver(FitnessObserver o) {
-        observers.remove(o);
-    }
-
-    @Override
-    public void fitnessChanged() {
-        for(FitnessObserver o : observers){
-            o.onFitnessChanged();
-        }
-    }
-
-    @Override
-    public List<Solution> getNondominatedSolutions() {
+    public List<FitnessSolution<Double>> getNondominatedSolutions() {
         return fronts.get(0);
     }
 
     @Override
-    public List<List<Solution>> getParetoFronts() {
+    public List<List<FitnessSolution<Double>>> getParetoFronts() {
         return fronts;
     }
 }

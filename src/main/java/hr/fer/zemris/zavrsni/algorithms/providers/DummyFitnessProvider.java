@@ -1,16 +1,18 @@
 package hr.fer.zemris.zavrsni.algorithms.providers;
 
 import hr.fer.zemris.zavrsni.algorithms.AbstractMOOPAlgorithm;
-import hr.fer.zemris.zavrsni.algorithms.NSGA;
+import hr.fer.zemris.zavrsni.solution.FitnessSolution;
 import hr.fer.zemris.zavrsni.solution.Solution;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class DummyFitnessProvider implements ValueProvider<Double> {
 
     private double[] lowerBounds, upperBounds;
     private double epsilon, sigmaShare, alpha;
-    private AbstractMOOPAlgorithm moop;
+    private AbstractMOOPAlgorithm<FitnessSolution<Double>> moop;
 
     public DummyFitnessProvider(
         double[] lowerBounds,
@@ -18,7 +20,7 @@ public class DummyFitnessProvider implements ValueProvider<Double> {
         double epsilon,
         double sigmaShare,
         double alpha,
-        AbstractMOOPAlgorithm moop
+        AbstractMOOPAlgorithm<FitnessSolution<Double>> moop
     ) {
         this.lowerBounds = lowerBounds;
         this.upperBounds = upperBounds;
@@ -28,18 +30,19 @@ public class DummyFitnessProvider implements ValueProvider<Double> {
         this.moop = moop;
     }
 
-    public void provide(Map<Solution, Double> dummyFitness){
+    @Override
+    public void provide(List<FitnessSolution<Double>> population) {
         double Fmin = moop.populationSize() + epsilon;
-        List<List<Solution>> fronts = moop.getParetoFronts();
-        for (List<Solution> front : fronts) {
-            for (Solution q : front) {
-                dummyFitness.put(q,(Fmin - epsilon) / nicheDensity(q, front));
+        List<List<FitnessSolution<Double>>> fronts = moop.getParetoFronts();
+        for (List<FitnessSolution<Double>> front : fronts) {
+            for (FitnessSolution<Double> f : front) {
+                f.setFitness((Fmin - epsilon) / nicheDensity(f, front));
             }
-            Fmin = dummyFitness.get(Collections.min(front, Comparator.comparingDouble(dummyFitness::get)));
+           Fmin = Collections.min(front, Comparator.naturalOrder()).getFitness();
         }
     }
 
-    private double nicheDensity(Solution sol, List<Solution> front) {
+    private double nicheDensity(Solution sol, List<FitnessSolution<Double>> front) {
         double nicheDensity = 0;
         for (Solution solution : front) {
             nicheDensity += sharingFunction(sol, solution);

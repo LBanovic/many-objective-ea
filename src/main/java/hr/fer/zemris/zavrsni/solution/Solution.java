@@ -36,7 +36,7 @@ public class Solution {
     @Override public String toString() {
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < variables.length - 1; i++){
-            sb.append(variables[i] + " ");
+            sb.append(variables[i]).append(" ");
         }
         sb.append(variables[variables.length - 1]);
         return sb.toString();
@@ -50,14 +50,10 @@ public class Solution {
             return false;
         }
         Solution solution = (Solution) o;
-        return Arrays.equals(variables, solution.variables) &&
-               Arrays.equals(objectives, solution.objectives);
+        return Arrays.equals(variables, solution.variables);
     }
 
     @Override public int hashCode() {
-
-        int result = Arrays.hashCode(variables);
-        result = 31 * result + Arrays.hashCode(objectives);
-        return result;
+        return Arrays.hashCode(variables);
     }
 }

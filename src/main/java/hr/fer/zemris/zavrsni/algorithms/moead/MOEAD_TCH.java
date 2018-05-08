@@ -5,10 +5,12 @@ import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.solution.Solution;
 
+import java.util.List;
+
 public class MOEAD_TCH extends AbstractMOEAD {
 
-    public MOEAD_TCH(Solution[] population, MOOPProblem problem, int closestVectors,
-                     int parameterH, Mutation mutation, Crossover crossover, int maxGen) {
+    public MOEAD_TCH(List<Solution> population, MOOPProblem problem, int closestVectors,
+                     int parameterH, Mutation mutation, Crossover<Solution> crossover, int maxGen) {
         super(population, problem, closestVectors, parameterH, mutation, crossover, maxGen);
     }
 
