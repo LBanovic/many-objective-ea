@@ -191,8 +191,8 @@ public final class MOOPUtils {
                 if(!childPopulation.contains(child)) childPopulation.add(child);
             }
         }
-        for (int i = population.size(); i < childPopulation.size(); i++) {
-            childPopulation.remove(i);
+        while (childPopulation.size() > population.size()) {
+            childPopulation.remove(childPopulation.size() - 1);
         }
         return childPopulation;
     }
