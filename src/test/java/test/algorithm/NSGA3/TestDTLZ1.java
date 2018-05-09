@@ -20,7 +20,7 @@ public class TestDTLZ1 {
     public static void main(String[] args) {
 
         int numberOfDivisions = 12;
-        int problemSize = 5;
+        int problemSize = 3;
 
         double eta = 30;
 

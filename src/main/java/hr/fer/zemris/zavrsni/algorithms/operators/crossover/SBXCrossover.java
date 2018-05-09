@@ -16,7 +16,6 @@ import java.util.Random;
 // ref: http://www.slideshare.net/paskorn/simulated-binary-crossover-presentation#
 // ----------------------------------------------------------------------
 
-//TODO pogledati kako radi jer je ovo manje vise ctrl c / ctrl v
 public class SBXCrossover<T extends Solution> extends Crossover<T> {
 
     private final double eta;

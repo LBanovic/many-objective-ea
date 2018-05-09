@@ -30,7 +30,6 @@ public class NSGA2 extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
 
     private List<List<FitnessSolution<Double>>> fronts;
 
-    @SuppressWarnings("unchecked")
     public NSGA2(
             List<FitnessSolution<Double>> population,
             MOOPProblem problem,
@@ -49,7 +48,6 @@ public class NSGA2 extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void run() {
         int gen = 0;
         TournamentSelection<Double> binary = new TournamentSelection<>(2, true);
@@ -76,7 +74,7 @@ public class NSGA2 extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
                     } else break;
                 }
                 crowdProvider.provide(population);
-                fronts.get(i).sort(Comparator.naturalOrder());
+                fronts.get(i).sort(Comparator.reverseOrder());
                 int size = newPopulation.size();
                 for (int j = size; j < population.size(); j++) {
                     newPopulation.add(fronts.get(i).get(j - size));

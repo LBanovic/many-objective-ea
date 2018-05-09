@@ -8,6 +8,7 @@ import hr.fer.zemris.zavrsni.algorithms.operators.crossover.BLXAlpha;
 import hr.fer.zemris.zavrsni.algorithms.operators.crossover.SBXCrossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.mutation.NormalDistributionMutation;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
+import hr.fer.zemris.zavrsni.evaluator.examples.DTLZ1;
 import hr.fer.zemris.zavrsni.solution.FitnessSolution;
 import hr.fer.zemris.zavrsni.solution.FitnessSolutionFactory;
 import hr.fer.zemris.zavrsni.solution.SolutionFactory;
