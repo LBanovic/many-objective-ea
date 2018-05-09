@@ -6,6 +6,8 @@ import hr.fer.zemris.zavrsni.solution.Solution;
 
 import java.util.*;
 
+import static hr.fer.zemris.zavrsni.algorithms.MOOPUtils.calculateDistance;
+
 public class SPEAFitnessProvider implements ValueProvider<Double> {
 
     @Override
@@ -15,14 +17,14 @@ public class SPEAFitnessProvider implements ValueProvider<Double> {
         Map<Solution, List<Solution>> dominators = new HashMap<>();
         Map<Solution, Double> map = new HashMap<>(solutions.size());
 
+        for(FitnessSolution<Double> v : solutions) dominators.put(v, new LinkedList<>());
         //Strength value
         for(Solution s : solutions){
             double strength = 0;
-            dominators.put(s, new LinkedList<>());
             for(Solution t : solutions){
                 if(MOOPUtils.dominates(s, t)){
                     strength++;
-                    dominators.get(s).add(t);
+                    dominators.get(t).add(s);
                 }
             }
             map.put(s, strength);
@@ -41,27 +43,16 @@ public class SPEAFitnessProvider implements ValueProvider<Double> {
 
         for(int n = 0; n < solutions.size(); n++){
             List<Double> distances = new ArrayList<>(solutions.size() - 1);
+            FitnessSolution<Double> s = solutions.get(n);
             for(int i = 0; i < solutions.size(); i++){
                 if(n != i){
-                    distances.add(calculateDistance(solutions.get(n), solutions.get(i)));
+                    distances.add(calculateDistance(s, solutions.get(i)));
                 }
             }
             Collections.sort(distances);
-            FitnessSolution<Double> s = solutions.get(n);
             double density = 1. / (distances.get(k) + 2);
             double current = map.get(s);
             s.setFitness(current + density);
         }
-    }
-
-    private double calculateDistance(Solution s, Solution t) {
-        double sum = 0;
-        double[] obj1 = s.getObjectives();
-        double[] obj2 = t.getObjectives();
-        for(int i = 0; i < obj1.length; i++){
-            double dif = obj1[i] - obj2[i];
-            sum += dif * dif;
-        }
-        return Math.sqrt(sum);
     }
 }

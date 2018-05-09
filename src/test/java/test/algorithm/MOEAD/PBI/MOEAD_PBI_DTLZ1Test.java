@@ -18,9 +18,9 @@ import java.util.List;
 
 public class MOEAD_PBI_DTLZ1Test {
     public static void main(String[] args) {
-        MOOPProblem problem = new DTLZ1(3);
+        MOOPProblem problem = new DTLZ1(10);
 
-        int parameterH = 10;
+        int parameterH = 4;
         int closestVectors = 10;
         final int populationSize = MOEADUtil.getSizeOfPopulation(parameterH, problem.getNumberOfObjectives());
         final double blxAlpha = 0.1;
@@ -28,7 +28,7 @@ public class MOEAD_PBI_DTLZ1Test {
         final double mutationChance = 0.03;
         final double penalty = 5;
 
-        final int maxGen = 1000;
+        final int maxGen = 200;
 
         SolutionFactory<Solution> s = new RegularSolutionFactory();
         List<Solution> population = MOOPUtils.generateRandomPopulation(populationSize, problem, s);

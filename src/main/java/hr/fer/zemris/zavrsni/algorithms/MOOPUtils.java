@@ -14,6 +14,8 @@ public final class MOOPUtils {
 
     private static Random rand = new Random();
 
+    public static final double EPSILON = 1e-9;
+
     //So it cannot be instantiated.
     private MOOPUtils() {
     }
@@ -188,7 +190,8 @@ public final class MOOPUtils {
                 mutation.mutate(sol);
             }
             for (T child : children) {
-                if(!childPopulation.contains(child)) childPopulation.add(child);
+                if(!childPopulation.contains(child))
+                    childPopulation.add(child);
             }
         }
         while (childPopulation.size() > population.size()) {
@@ -201,5 +204,17 @@ public final class MOOPUtils {
         List<T> combined = new ArrayList<>(population);
         combined.addAll(childPopulation);
         return combined;
+    }
+
+
+    public static double calculateDistance(Solution s, Solution t) {
+        double sum = 0;
+        double[] obj1 = s.getObjectives();
+        double[] obj2 = t.getObjectives();
+        for(int i = 0; i < obj1.length; i++){
+            double dif = obj1[i] - obj2[i];
+            sum += dif * dif;
+        }
+        return Math.sqrt(sum);
     }
 }

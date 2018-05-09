@@ -150,9 +150,6 @@ public class NSGA3Util {
 
     protected static double perpendicularDistance(Solution sol, ReferencePoint referencePoint) {
         double[] t = sol.getObjectives();
-//        for(int i = 0; i < t.length; i++){
-//            t[i] = -t[i];
-//        }
         RealVector s = new ArrayRealVector(t);
         RealVector w = new ArrayRealVector(referencePoint.location);
         return s.subtract(w.mapMultiply(w.dotProduct(s)).mapMultiply(1. / (w.getNorm() * w.getNorm()))).getNorm();
