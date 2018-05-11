@@ -34,8 +34,8 @@ public class SPEA2 extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
         int gen = 0;
         while (true) {
             System.out.println("Generation: " + gen);
-            MOOPUtils.evaluatePopulation(population, problem);
-            List<FitnessSolution<Double>> combined = MOOPUtils.mergePopulations(population, archive);
+            PopulationUtils.evaluatePopulation(population, problem);
+            List<FitnessSolution<Double>> combined = PopulationUtils.mergePopulations(population, archive);
             archive.clear();
             speaFitnessProvider.provide(combined);
             for (FitnessSolution<Double> s : combined) {
@@ -58,7 +58,7 @@ public class SPEA2 extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
             gen++;
             if (gen > maxGen) break;
 
-            population = MOOPUtils.createNewPopulation(archive, selection,
+            population = PopulationUtils.createNewPopulation(archive, selection,
                     crossover, mutation, allowRepetition);
         }
     }

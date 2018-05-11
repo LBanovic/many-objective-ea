@@ -2,7 +2,7 @@ package hr.fer.zemris.zavrsni.algorithms.moead;
 
 import hr.fer.zemris.zavrsni.algorithms.AbstractMOOPAlgorithm;
 import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
-import hr.fer.zemris.zavrsni.algorithms.nsga3.NSGA3Util;
+import hr.fer.zemris.zavrsni.algorithms.PopulationUtils;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
@@ -23,10 +23,10 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
     private double[] idealPoint;
 
     public AbstractMOEAD(List<Solution> population, MOOPProblem problem, int closestVectors, int parameterH,
-                 Mutation mutation, Crossover<Solution> crossover, int maxGen) {
+                         Mutation mutation, Crossover<Solution> crossover, int maxGen) {
         super(population, problem, maxGen, crossover, mutation);
 
-        int numberOfWeights = NSGA3Util.binomialCoefficient(parameterH + problem.getNumberOfObjectives() - 1,
+        int numberOfWeights = MOOPUtils.binomialCoefficient(parameterH + problem.getNumberOfObjectives() - 1,
                 problem.getNumberOfObjectives() - 1);
         weights = new double[numberOfWeights][problem.getNumberOfObjectives()];
         initializeWeights(problem, parameterH, weights);
@@ -53,7 +53,7 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
             neighbourhoods.put(i, neighbours);
         }
         externalPopulation = new ArrayList<>();
-        MOOPUtils.evaluatePopulation(population, problem);
+        PopulationUtils.evaluatePopulation(population, problem);
         this.idealPoint = new double[problem.getNumberOfObjectives()];
         for (int i = 0; i < idealPoint.length; i++) {
             final int k = i;
@@ -82,6 +82,10 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
         }
     }
 
+    public static int getPreferredPopulationSize(int H, int numberOfObjectives) {
+        return MOOPUtils.binomialCoefficient(H + numberOfObjectives - 1, numberOfObjectives - 1);
+    }
+
     @Override
     public void run() {
         int gen = 0;
@@ -102,26 +106,26 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
                     if (idealPoint[j] < obj[j]) idealPoint[j] = obj[j];
                 }
                 for (int j : indices) {
-                    if(scalarizationFunction(y, weights[j], idealPoint) <=
-                            scalarizationFunction(population.get(j), weights[j], idealPoint)){
+                    if (scalarizationFunction(y, weights[j], idealPoint) <=
+                            scalarizationFunction(population.get(j), weights[j], idealPoint)) {
                         population.set(j, y);
                     }
                 }
-                for(int j = 0; j < externalPopulation.size(); j++){
+                for (int j = 0; j < externalPopulation.size(); j++) {
                     Solution sol = externalPopulation.get(j);
-                    if(MOOPUtils.dominates(y, sol)){
+                    if (MOOPUtils.dominates(y, sol)) {
                         externalPopulation.remove(j);
                         j--;
                     }
                 }
                 boolean dominated = false;
-                for(Solution sol : externalPopulation){
-                    if(MOOPUtils.dominates(sol, y)){
+                for (Solution sol : externalPopulation) {
+                    if (MOOPUtils.dominates(sol, y)) {
                         dominated = true;
                         break;
                     }
                 }
-                if(!dominated){
+                if (!dominated) {
                     externalPopulation.add(y);
                 }
             }

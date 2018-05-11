@@ -2,6 +2,7 @@ package hr.fer.zemris.zavrsni.algorithms.nsga3;
 
 import hr.fer.zemris.zavrsni.algorithms.AbstractMOOPAlgorithm;
 import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
+import hr.fer.zemris.zavrsni.algorithms.PopulationUtils;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.selection.RandomSelection;
@@ -10,9 +11,8 @@ import hr.fer.zemris.zavrsni.solution.Solution;
 
 import java.util.*;
 
-import static hr.fer.zemris.zavrsni.algorithms.MOOPUtils.mergePopulations;
+import static hr.fer.zemris.zavrsni.algorithms.PopulationUtils.mergePopulations;
 
-//TODO proradilo, ali crasha u nekim izoliranim slucajevima => sto??
 public class NSGA3 extends AbstractMOOPAlgorithm<Solution>{
 
     private Random rand = new Random();
@@ -32,29 +32,33 @@ public class NSGA3 extends AbstractMOOPAlgorithm<Solution>{
         fronts = new LinkedList<>();
     }
 
+    public static int getPreferredPopulationSize(int numberOfObjectives, int numberOfDivisions) {
+        return MOOPUtils.binomialCoefficient(numberOfObjectives + numberOfDivisions - 1, numberOfDivisions);
+    }
+
     @Override
     public void run() {
         int gen = 0;
         List<Solution> childPopulation;
         int numberOfObjectives = problem.getNumberOfObjectives();
-        final int numberOfRefPoints = NSGA3Util.getNumberOfReferencePoints(numberOfObjectives, numberOfDivisions);
+        final int numberOfRefPoints = getPreferredPopulationSize(numberOfObjectives, numberOfDivisions);
         List<NSGA3Util.ReferencePoint> points = new ArrayList<>(numberOfRefPoints);
         NSGA3Util.ReferencePoint start = new NSGA3Util.ReferencePoint(new double[numberOfObjectives]);
         while (true) {
             System.out.println("Generation: " + gen);
 
             if (gen >= maxGen){
-                MOOPUtils.evaluatePopulation(population, problem);
+                PopulationUtils.evaluatePopulation(population, problem);
                 MOOPUtils.nonDominatedSorting(population, fronts);
                 break;
             }
 
-            childPopulation = MOOPUtils.createNewPopulation(population, selection, crossover, mutation, allowRepetition);
+            childPopulation = PopulationUtils.createNewPopulation(population, selection, crossover, mutation, allowRepetition);
 
             List<Solution> combined = mergePopulations(population, childPopulation);
             List<Solution> newPopulation = new ArrayList<>(population.size());
 
-            MOOPUtils.evaluatePopulation(combined, problem);
+            PopulationUtils.evaluatePopulation(combined, problem);
             MOOPUtils.nonDominatedSorting(combined, fronts);
 
             int i;

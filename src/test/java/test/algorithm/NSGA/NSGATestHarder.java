@@ -1,18 +1,16 @@
 package test.algorithm.NSGA;
 
-import hr.fer.zemris.zavrsni.algorithms.AbstractMOOPAlgorithm;
-import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
 import hr.fer.zemris.zavrsni.algorithms.NSGA;
+import hr.fer.zemris.zavrsni.algorithms.OutputUtils;
+import hr.fer.zemris.zavrsni.algorithms.PopulationUtils;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
-import hr.fer.zemris.zavrsni.algorithms.operators.Selection;
 import hr.fer.zemris.zavrsni.algorithms.operators.crossover.BLXAlpha;
 import hr.fer.zemris.zavrsni.algorithms.operators.mutation.NormalDistributionMutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.selection.RouletteWheelSelection;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.solution.FitnessSolution;
 import hr.fer.zemris.zavrsni.solution.FitnessSolutionFactory;
-import hr.fer.zemris.zavrsni.solution.Solution;
 import hr.fer.zemris.zavrsni.solution.SolutionFactory;
 import test.easyproblems.HCProblem;
 
@@ -36,7 +34,7 @@ public class NSGATestHarder {
         MOOPProblem problem = new HCProblem();
 
         SolutionFactory<FitnessSolution<Double>> f = new FitnessSolutionFactory<>();
-        List<FitnessSolution<Double>> population = MOOPUtils.generateRandomPopulation(populationSize, problem, f);
+        List<FitnessSolution<Double>> population = PopulationUtils.generateRandomPopulation(populationSize, problem, f);
         Crossover<FitnessSolution<Double>> crossover = new BLXAlpha<>(f, blxAlpha, problem.getLowerBounds(), problem.getUpperBounds());
         Mutation mutation = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), sigma, mutationChance);
         RouletteWheelSelection selection = new RouletteWheelSelection();
@@ -48,8 +46,8 @@ public class NSGATestHarder {
         );
         nsga.run();
 
-        MOOPUtils.printParameters(nsga);
+        OutputUtils.printParameters(nsga);
         System.out.println();
-        MOOPUtils.printSolutions(nsga);
+        OutputUtils.printSolutions(nsga);
     }
 }

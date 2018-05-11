@@ -15,7 +15,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import static hr.fer.zemris.zavrsni.algorithms.MOOPUtils.mergePopulations;
+import static hr.fer.zemris.zavrsni.algorithms.PopulationUtils.mergePopulations;
 
 public class NSGA2 extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
 
@@ -57,14 +57,14 @@ public class NSGA2 extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
             System.out.println(gen);
             if (gen >= maxGen) break;
             if (gen == 0) {
-                MOOPUtils.evaluatePopulation(population, problem);
+                PopulationUtils.evaluatePopulation(population, problem);
                 MOOPUtils.nonDominatedSorting(population, fronts);
                 rankProvider.provide(population);
-                childPopulation = MOOPUtils.createNewPopulation(population, binary, crossover, mutation, allowRepetition);
+                childPopulation = PopulationUtils.createNewPopulation(population, binary, crossover, mutation, allowRepetition);
             } else {
                 List<FitnessSolution<Double>> combined = mergePopulations(population, childPopulation);
                 List<FitnessSolution<Double>> newPopulation = new ArrayList<>(population.size());
-                MOOPUtils.evaluatePopulation(combined, problem);
+                PopulationUtils.evaluatePopulation(combined, problem);
                 MOOPUtils.nonDominatedSorting(combined, fronts);
                 int i;
                 for (i = 0; i < fronts.size(); i++) {
@@ -80,7 +80,7 @@ public class NSGA2 extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
                     newPopulation.add(fronts.get(i).get(j - size));
                 }
                 population = newPopulation;
-                childPopulation = MOOPUtils.createNewPopulation(population, selection, crossover, mutation, allowRepetition);
+                childPopulation = PopulationUtils.createNewPopulation(population, selection, crossover, mutation, allowRepetition);
             }
             gen++;
         }

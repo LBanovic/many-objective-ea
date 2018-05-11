@@ -43,14 +43,14 @@ public class NSGA extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
         int gen = 0;
 
         while (true) {
-            MOOPUtils.evaluatePopulation(population, problem);
+            PopulationUtils.evaluatePopulation(population, problem);
             MOOPUtils.nonDominatedSorting(population, fronts);
             System.out.println(gen);
             if (gen >= maxGen) {
                 break;
             }
             provider.provide(population);
-            population = MOOPUtils.createNewPopulation(population, selection, crossover, mutation, allowRepetition);
+            population = PopulationUtils.createNewPopulation(population, selection, crossover, mutation, allowRepetition);
             gen++;
         }
     }

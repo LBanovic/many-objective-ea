@@ -1,8 +1,8 @@
 package test.algorithm.NSGA3;
 
-import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
+import hr.fer.zemris.zavrsni.algorithms.OutputUtils;
+import hr.fer.zemris.zavrsni.algorithms.PopulationUtils;
 import hr.fer.zemris.zavrsni.algorithms.nsga3.NSGA3;
-import hr.fer.zemris.zavrsni.algorithms.nsga3.NSGA3Util;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.crossover.SBXCrossover;
@@ -33,14 +33,14 @@ public class TestDTLZ1 {
         boolean allowRepetition = false;
 
         SolutionFactory<Solution> s = new RegularSolutionFactory();
-        List<Solution> population = MOOPUtils.generateRandomPopulation(
-                NSGA3Util.getNumberOfReferencePoints(problem.getNumberOfObjectives(), numberOfDivisions),
+        List<Solution> population = PopulationUtils.generateRandomPopulation(
+                NSGA3.getPreferredPopulationSize(problem.getNumberOfObjectives(), numberOfDivisions),
                 problem, s);
         Crossover<Solution> crossover = new SBXCrossover<>(s, eta, problem.getLowerBounds(), problem.getUpperBounds());
         Mutation mutation = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), mutationChance, sigma);
 
         NSGA3 nsga3 = new NSGA3(population, problem, crossover, mutation, maxGen, allowRepetition, numberOfDivisions);
         nsga3.run();
-        MOOPUtils.printSolutions(nsga3);
+        OutputUtils.printSolutions(nsga3);
     }
 }

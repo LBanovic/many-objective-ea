@@ -1,14 +1,13 @@
 package test.algorithm.NSGA2;
 
-import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
 import hr.fer.zemris.zavrsni.algorithms.NSGA2;
+import hr.fer.zemris.zavrsni.algorithms.OutputUtils;
+import hr.fer.zemris.zavrsni.algorithms.PopulationUtils;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
-import hr.fer.zemris.zavrsni.algorithms.operators.crossover.BLXAlpha;
 import hr.fer.zemris.zavrsni.algorithms.operators.crossover.SBXCrossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.mutation.NormalDistributionMutation;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
-import hr.fer.zemris.zavrsni.evaluator.examples.DTLZ1;
 import hr.fer.zemris.zavrsni.solution.FitnessSolution;
 import hr.fer.zemris.zavrsni.solution.FitnessSolutionFactory;
 import hr.fer.zemris.zavrsni.solution.SolutionFactory;
@@ -33,15 +32,15 @@ public class NSGA2TestHarder {
 
         SolutionFactory<FitnessSolution<Double>> f = new FitnessSolutionFactory<>();
 
-        List<FitnessSolution<Double>> population = MOOPUtils.generateRandomPopulation(populationSize, problem, f);
+        List<FitnessSolution<Double>> population = PopulationUtils.generateRandomPopulation(populationSize, problem, f);
         Crossover<FitnessSolution<Double>> crossover = new SBXCrossover<>(f, eta, problem.getLowerBounds(), problem.getUpperBounds());
         Mutation mutation  = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), sigma, mutationChance);
 
         NSGA2 nsga2 = new NSGA2(population, problem, crossover, mutation, tournamentSize, maxGen, allowRepetition);
         nsga2.run();
 
-        MOOPUtils.printParameters(nsga2);
+        OutputUtils.printParameters(nsga2);
         System.out.println();
-        MOOPUtils.printSolutions(nsga2);
+        OutputUtils.printSolutions(nsga2);
     }
 }

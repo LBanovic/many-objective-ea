@@ -1,7 +1,8 @@
 package test.algorithm.NSGA2;
 
-import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
 import hr.fer.zemris.zavrsni.algorithms.NSGA2;
+import hr.fer.zemris.zavrsni.algorithms.OutputUtils;
+import hr.fer.zemris.zavrsni.algorithms.PopulationUtils;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.crossover.BLXAlpha;
@@ -32,13 +33,13 @@ public class NSGA2Test {
 
         SolutionFactory<FitnessSolution<Double>> f = new FitnessSolutionFactory<>();
 
-        List<FitnessSolution<Double>> population = MOOPUtils.generateRandomPopulation(populationSize, problem, f);
+        List<FitnessSolution<Double>> population = PopulationUtils.generateRandomPopulation(populationSize, problem, f);
         Crossover<FitnessSolution<Double>> crossover = new BLXAlpha<>(f, blxAlpha, problem.getLowerBounds(), problem.getUpperBounds());
         Mutation mutation  = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), sigma, mutationChance);
 
         NSGA2 nsga2 = new NSGA2(population, problem, crossover, mutation, tournamentSize, maxGen, allowRepetition);
         nsga2.run();
 
-        MOOPUtils.printSolutions(nsga2);
+        OutputUtils.printSolutions(nsga2);
     }
 }

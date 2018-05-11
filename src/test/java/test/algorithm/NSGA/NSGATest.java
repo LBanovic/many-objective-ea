@@ -1,7 +1,8 @@
 package test.algorithm.NSGA;
 
-import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
 import hr.fer.zemris.zavrsni.algorithms.NSGA;
+import hr.fer.zemris.zavrsni.algorithms.OutputUtils;
+import hr.fer.zemris.zavrsni.algorithms.PopulationUtils;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.crossover.BLXAlpha;
@@ -34,7 +35,7 @@ public class NSGATest {
         MOOPProblem problem = new EZProblem(4);
 
         SolutionFactory<FitnessSolution<Double>> f = new FitnessSolutionFactory<>();
-        List<FitnessSolution<Double>> population = MOOPUtils.generateRandomPopulation(populationSize, problem, f);
+        List<FitnessSolution<Double>> population = PopulationUtils.generateRandomPopulation(populationSize, problem, f);
         Crossover<FitnessSolution<Double>> crossover = new BLXAlpha<>(f, blxAlpha, problem.getLowerBounds(), problem.getUpperBounds());
         Mutation mutation = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), sigma, mutationChance);
         RouletteWheelSelection selection = new RouletteWheelSelection();
@@ -45,6 +46,6 @@ public class NSGATest {
                                                             alpha
         );
         nsga.run();
-        MOOPUtils.printSolutions(nsga);
+        OutputUtils.printSolutions(nsga);
     }
 }

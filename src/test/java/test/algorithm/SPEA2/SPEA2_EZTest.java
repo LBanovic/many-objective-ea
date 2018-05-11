@@ -1,8 +1,6 @@
 package test.algorithm.SPEA2;
 
-import hr.fer.zemris.zavrsni.algorithms.AbstractMOOPAlgorithm;
-import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
-import hr.fer.zemris.zavrsni.algorithms.SPEA2;
+import hr.fer.zemris.zavrsni.algorithms.*;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.crossover.SBXCrossover;
@@ -30,7 +28,7 @@ public class SPEA2_EZTest {
         final int maxGen = 1000;
 
         SolutionFactory<FitnessSolution<Double>> s = new FitnessSolutionFactory<>();
-        List<FitnessSolution<Double>> population = MOOPUtils.generateRandomPopulation(populationSize, problem, s);
+        List<FitnessSolution<Double>> population = PopulationUtils.generateRandomPopulation(populationSize, problem, s);
         Crossover<FitnessSolution<Double>> crossover = new SBXCrossover<>(s, eta, problem.getLowerBounds(), problem.getUpperBounds());
         Mutation mutation = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), sigma, mutationChance);
 
@@ -38,6 +36,6 @@ public class SPEA2_EZTest {
                 crossover, mutation, tournamentSize, allowRepetition);
         spea2.run();
 
-        MOOPUtils.printSolutions(spea2);
+        OutputUtils.printSolutions(spea2);
     }
 }

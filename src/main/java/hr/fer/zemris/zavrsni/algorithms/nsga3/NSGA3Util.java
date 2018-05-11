@@ -10,24 +10,6 @@ public class NSGA3Util {
     private NSGA3Util() {
     }
 
-    private static int factorial(int n) {
-        int multiply = 1;
-        for (int i = 1; i <= n; i++) {
-            multiply *= i;
-        }
-        return multiply;
-    }
-
-    public static int binomialCoefficient(int n, int k) {
-        if (n < k) throw new IllegalArgumentException("n must be greater than k");
-        if (k > n / 2) k = n - k;
-        int mul = 1;
-        for (int i = n - k + 1; i <= n; i++) {
-            mul *= i;
-        }
-        return mul / factorial(k);
-    }
-
     protected static void getReferencePoints(List<ReferencePoint> points, ReferencePoint point,
                                              int numberOfObjectives, int left, int total, int element) {
         if (element == numberOfObjectives - 1) {
@@ -213,7 +195,4 @@ public class NSGA3Util {
         }
     }
 
-    public static int getNumberOfReferencePoints(int numberOfObjectives, int numberOfDivisions) {
-        return binomialCoefficient(numberOfObjectives + numberOfDivisions - 1, numberOfDivisions);
-    }
 }

@@ -1,9 +1,10 @@
 package test.algorithm.MOEAD.TCH;
 
 import hr.fer.zemris.zavrsni.algorithms.AbstractMOOPAlgorithm;
-import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
+import hr.fer.zemris.zavrsni.algorithms.OutputUtils;
+import hr.fer.zemris.zavrsni.algorithms.PopulationUtils;
+import hr.fer.zemris.zavrsni.algorithms.moead.AbstractMOEAD;
 import hr.fer.zemris.zavrsni.algorithms.moead.MOEAD_TCH;
-import hr.fer.zemris.zavrsni.algorithms.moead.MOEADUtil;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.crossover.BLXAlpha;
@@ -23,7 +24,7 @@ public class MOEAD_TCH_EZTest {
 
         int parameterH = 12;
         int closestVectors = 10;
-        final int populationSize = MOEADUtil.getSizeOfPopulation(parameterH, problem.getNumberOfObjectives());
+        final int populationSize = AbstractMOEAD.getPreferredPopulationSize(parameterH, problem.getNumberOfObjectives());
         final double blxAlpha = 0.1;
         final double sigma = 0.1;
         final double mutationChance = 0.08;
@@ -33,13 +34,13 @@ public class MOEAD_TCH_EZTest {
 
         SolutionFactory<Solution> s = new RegularSolutionFactory();
 
-        List<Solution> population = MOOPUtils.generateRandomPopulation(populationSize, problem, s);
+        List<Solution> population = PopulationUtils.generateRandomPopulation(populationSize, problem, s);
         Crossover<Solution> crossover = new BLXAlpha<>(s, blxAlpha, problem.getLowerBounds(), problem.getUpperBounds());
         Mutation mutation = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), sigma, mutationChance);
 
         AbstractMOOPAlgorithm<Solution> moead = new MOEAD_TCH(population, problem, closestVectors, parameterH, mutation, crossover, maxGen);
 
         moead.run();
-        MOOPUtils.printSolutions(moead);
+        OutputUtils.printSolutions(moead);
     }
 }
