@@ -5,12 +5,12 @@ import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 
 import java.util.Arrays;
 
-public class DTLZ2 extends MOOPProblem {
+public class DTLZ3 extends MOOPProblem {
 
     private int k;
 
-    public DTLZ2(int fVectorLength, int kVectorLength){
-        Function g = RepeatingObjectives.sumOfSquares(k, 0.5);
+    public DTLZ3(int fVectorLength, int kVectorLength){
+        Function g = RepeatingObjectives.cosineSum(k, 100, 0.5);
         objectives = RepeatingObjectives.spherePareto(fVectorLength, g);
         k = kVectorLength;
         lowerBounds = new double[getNumberOfVariables()];
@@ -19,11 +19,12 @@ public class DTLZ2 extends MOOPProblem {
         Arrays.fill(upperBounds, 1);
     }
 
-    public DTLZ2(Integer fVectorLength){
+    public DTLZ3(Integer fVectorLength){
         this(fVectorLength, 10);
     }
 
-    @Override public int getNumberOfVariables() {
-        return objectives.length - 1 + k;
+    @Override
+    public int getNumberOfVariables() {
+        return objectives.length + k - 1;
     }
 }

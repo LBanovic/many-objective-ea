@@ -47,6 +47,7 @@ public class ExperimentParser {
             problem = MOOPUtils.getExample(probName, probSize);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e1) {
             System.out.println("Invalid algorithm or problem.");
+            e1.printStackTrace();
             System.exit(0);
         }
         List<Solution> population = PopulationUtils.generateRandomPopulation(populationSize, problem);
