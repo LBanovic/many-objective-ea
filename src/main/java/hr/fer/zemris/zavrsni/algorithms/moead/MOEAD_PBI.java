@@ -18,6 +18,7 @@ public class MOEAD_PBI extends AbstractMOEAD {
                      int maxGen, double penalty) {
         super(population, problem, closestVectors, parameterH, mutation, crossover, maxGen);
         this.penalty = penalty;
+
     }
 
     @Override

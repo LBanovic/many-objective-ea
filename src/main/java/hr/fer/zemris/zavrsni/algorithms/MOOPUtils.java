@@ -1,7 +1,10 @@
 package hr.fer.zemris.zavrsni.algorithms;
 
+import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
+import hr.fer.zemris.zavrsni.experiments.Experiment;
 import hr.fer.zemris.zavrsni.solution.Solution;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -119,7 +122,7 @@ public final class MOOPUtils {
         double sum = 0;
         double[] obj1 = s.getObjectives();
         double[] obj2 = t.getObjectives();
-        for(int i = 0; i < obj1.length; i++){
+        for (int i = 0; i < obj1.length; i++) {
             double dif = obj1[i] - obj2[i];
             sum += dif * dif;
         }
@@ -142,5 +145,10 @@ public final class MOOPUtils {
             mul *= i;
         }
         return mul / factorial(k);
+    }
+
+    public static MOOPProblem getExample(String exampleName, int exampleSize) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        return (MOOPProblem) Class.forName("hr.fer.zemris.zavrsni.evaluator.examples." + exampleName).
+                getDeclaredConstructor(Integer.class).newInstance(exampleSize);
     }
 }

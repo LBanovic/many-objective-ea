@@ -55,7 +55,7 @@ public class DTLZ1 extends MOOPProblem {
      * Constructs a new DTLZ1 problem with the length of the vector for the g function of 5.
      * @param fVectorLength number of functions to be optimized
      */
-    public DTLZ1(int fVectorLength) {
+    public DTLZ1(Integer fVectorLength) {
         this(fVectorLength, 5);
     }
 

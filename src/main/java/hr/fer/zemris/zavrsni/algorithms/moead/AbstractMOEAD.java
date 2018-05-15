@@ -12,7 +12,7 @@ import java.util.*;
 
 public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
 
-    private final double[][] weights;
+    private double[][] weights;
 
     private Random rand = new Random();
 
@@ -28,17 +28,20 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
 
         int numberOfWeights = MOOPUtils.binomialCoefficient(parameterH + problem.getNumberOfObjectives() - 1,
                 problem.getNumberOfObjectives() - 1);
+        if(numberOfWeights < population.size())
+            throw new IllegalArgumentException("Not enough weights for the population!");
         weights = new double[numberOfWeights][problem.getNumberOfObjectives()];
         initializeWeights(problem, parameterH, weights);
+        weights = Arrays.copyOf(weights, population.size());
         this.neighbourhoods = new HashMap<>();
-        for (int i = 0; i < numberOfWeights; i++) {
+        for (int i = 0; i < weights.length; i++) {
             int[] neighbours = new int[closestVectors];
             double lastDistance = 0;
             neighbours[0] = i;
             for (int k = 1; k < closestVectors; k++) {
                 int min = i;
                 double currentMinDistance = Double.MAX_VALUE;
-                for (int j = 0; j < numberOfWeights; j++) {
+                for (int j = 0; j < weights.length; j++) {
 
                     double dist = euclidianDistance(weights[i], weights[j]);
                     if (dist < currentMinDistance && dist > lastDistance) {

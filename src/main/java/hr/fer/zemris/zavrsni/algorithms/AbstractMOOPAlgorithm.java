@@ -5,6 +5,7 @@ import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.Selection;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.solution.Solution;
+import hr.fer.zemris.zavrsni.solution.SolutionFactory;
 
 import java.util.List;
 

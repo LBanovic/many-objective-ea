@@ -6,6 +6,7 @@ import hr.fer.zemris.zavrsni.solution.Solution;
 
 import java.util.Random;
 
+/* PRILAGOĐENO IZ CPP implementacije nsga3 */
 public class PolynomialMutation implements Mutation {
 
     private Random rand = new Random();

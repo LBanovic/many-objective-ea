@@ -3,6 +3,7 @@ package hr.fer.zemris.zavrsni.algorithms;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.Selection;
+import hr.fer.zemris.zavrsni.algorithms.operators.selection.RouletteWheelSelection;
 import hr.fer.zemris.zavrsni.algorithms.providers.DummyFitnessProvider;
 import hr.fer.zemris.zavrsni.algorithms.providers.ValueProvider;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
@@ -23,7 +24,6 @@ public class NSGA extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
             List<FitnessSolution<Double>> population,
             MOOPProblem problem,
             Crossover<FitnessSolution<Double>> crossover,
-            Selection<FitnessSolution<Double>> selection,
             Mutation mutation,
             int maxGen,
             boolean allowRepetition,
@@ -32,7 +32,7 @@ public class NSGA extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
             double alpha
     ) {
         super(population, problem, maxGen, crossover, mutation);
-        this.selection = selection;
+        this.selection = new RouletteWheelSelection();
         this.allowRepetition = allowRepetition;
         provider = new DummyFitnessProvider(problem.getLowerBounds(), problem.getUpperBounds(),
                                                                    epsilon, sigmaShare, alpha, this);

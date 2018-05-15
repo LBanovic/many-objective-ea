@@ -1,18 +1,12 @@
 package test.algorithm.NSGA;
 
-import hr.fer.zemris.zavrsni.algorithms.NSGA;
-import hr.fer.zemris.zavrsni.algorithms.OutputUtils;
-import hr.fer.zemris.zavrsni.algorithms.PopulationUtils;
-import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
-import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
-import hr.fer.zemris.zavrsni.algorithms.operators.crossover.BLXAlpha;
-import hr.fer.zemris.zavrsni.algorithms.operators.mutation.NormalDistributionMutation;
-import hr.fer.zemris.zavrsni.algorithms.operators.selection.RouletteWheelSelection;
+import hr.fer.zemris.zavrsni.algorithms.*;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
+import hr.fer.zemris.zavrsni.experiments.NSGAExperiment;
 import hr.fer.zemris.zavrsni.solution.FitnessSolution;
 import hr.fer.zemris.zavrsni.solution.FitnessSolutionFactory;
+import hr.fer.zemris.zavrsni.solution.Solution;
 import hr.fer.zemris.zavrsni.solution.SolutionFactory;
-import test.easyproblems.EZProblem;
 
 import java.util.List;
 
@@ -22,30 +16,24 @@ public class NSGATest {
 
         final int populationSize = 100;
 
-        final double blxAlpha = 0.1;
-        final double sigma = 0.1;
-        final double mutationChance = 0.08;
+        final String allowRepetition = "false";
+        final String epsilon = "0.1";
+        final String sigmaShare = "4";
+        final String alpha = "2";
 
-        final int maxGen = 1000;
-        final boolean allowRepetition = false;
-        final double epsilon = 0.1;
-        final double sigmaShare = 4;
-        final double alpha = 2;
+        MOOPProblem problem = null;
 
-        MOOPProblem problem = new EZProblem(4);
+        try {
+            problem = MOOPUtils.getExample("EZProblem", 4);
+        }catch(Exception e){
+            System.err.println("Invalid problem name.");
+            System.exit(0);
+        }
 
-        SolutionFactory<FitnessSolution<Double>> f = new FitnessSolutionFactory<>();
-        List<FitnessSolution<Double>> population = PopulationUtils.generateRandomPopulation(populationSize, problem, f);
-        Crossover<FitnessSolution<Double>> crossover = new BLXAlpha<>(f, blxAlpha, problem.getLowerBounds(), problem.getUpperBounds());
-        Mutation mutation = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), sigma, mutationChance);
-        RouletteWheelSelection selection = new RouletteWheelSelection();
+        List<Solution> population = PopulationUtils.generateRandomPopulation(populationSize, problem);
 
-        NSGA nsga = new NSGA(population, problem, crossover, selection, mutation, maxGen, allowRepetition,
-                                                            epsilon,
-                                                            sigmaShare,
-                                                            alpha
-        );
-        nsga.run();
+        AbstractMOOPAlgorithm<FitnessSolution<Double>> nsga = new NSGAExperiment().run(problem, population,
+                epsilon, sigmaShare, alpha, allowRepetition);
         OutputUtils.printSolutions(nsga);
     }
 }

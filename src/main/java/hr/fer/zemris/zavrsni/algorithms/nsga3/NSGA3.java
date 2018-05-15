@@ -32,6 +32,10 @@ public class NSGA3 extends AbstractMOOPAlgorithm<Solution>{
         fronts = new LinkedList<>();
     }
 
+    public NSGA3(NSGA3Builder builder, boolean allowRepetition, int numberOfDivisions){
+        this(builder.getPopulation(), builder.getProblem(), builder.getCrossover(),
+                builder.getMutation(), builder.getMaxIterations(), allowRepetition, numberOfDivisions);
+    }
     public static int getPreferredPopulationSize(int numberOfObjectives, int numberOfDivisions) {
         return MOOPUtils.binomialCoefficient(numberOfObjectives + numberOfDivisions - 1, numberOfDivisions);
     }

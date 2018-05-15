@@ -20,7 +20,7 @@ public class DTLZ2 extends MOOPProblem {
             double[] x = solution.getVariables();
             double sum = 0;
             for(int i = x.length - k; i < x.length; i++){
-                sum += (x[i] - 0.5) * (x[1] - 0.5);
+                sum += (x[i] - 0.5) * (x[i] - 0.5);
             }
             return sum;
         };
@@ -43,7 +43,7 @@ public class DTLZ2 extends MOOPProblem {
         }
     }
 
-    public DTLZ2(int fVectorLength){
+    public DTLZ2(Integer fVectorLength){
         this(fVectorLength, 10);
     }
 

@@ -11,6 +11,7 @@ import hr.fer.zemris.zavrsni.algorithms.operators.crossover.SBXCrossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.mutation.PolynomialMutation;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.evaluator.examples.DTLZ1;
+import hr.fer.zemris.zavrsni.experiments.MOEAD_TCHExperiment;
 import hr.fer.zemris.zavrsni.solution.RegularSolutionFactory;
 import hr.fer.zemris.zavrsni.solution.Solution;
 import hr.fer.zemris.zavrsni.solution.SolutionFactory;
@@ -22,21 +23,14 @@ public class MOEAD_TCH_DTLZ1Test {
 
         MOOPProblem problem = new DTLZ1(3);
 
-        int parameterH = 12;
-        int closestVectors = 10;
-        final int populationSize = AbstractMOEAD.getPreferredPopulationSize(parameterH, problem.getNumberOfObjectives());
-        final double eta = 20;
-        final double mutationChance = 1. / problem.getNumberOfVariables();
+        String parameterH = "12";
+        String closestVectors = "10";
+        final int populationSize = AbstractMOEAD.getPreferredPopulationSize(Integer.parseInt(parameterH), problem.getNumberOfObjectives());
+;
+        List<Solution> population = PopulationUtils.generateRandomPopulation(populationSize, problem);
 
-        final int maxGen = 250;
-
-        SolutionFactory<Solution> s = new RegularSolutionFactory();
-        List<Solution> population = PopulationUtils.generateRandomPopulation(populationSize, problem, s);
-        Crossover<Solution> crossover = new SBXCrossover<>(s, eta, problem.getLowerBounds(), problem.getUpperBounds());
-        Mutation mutation = new PolynomialMutation(problem.getLowerBounds(), problem.getUpperBounds(), mutationChance, eta);
-        AbstractMOOPAlgorithm<Solution> moead = new MOEAD_TCH(population, problem, closestVectors, parameterH, mutation, crossover, maxGen);
-
-        moead.run();
+        AbstractMOOPAlgorithm<Solution> moead = new MOEAD_TCHExperiment().run(problem,
+                population, closestVectors, parameterH);
         OutputUtils.printSolutions(moead);
     }
 }

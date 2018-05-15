@@ -17,6 +17,10 @@ public class Solution {
         this.objectives = new double[numberOfObjectives];
     }
 
+    protected Solution(Solution s){
+        this.variables = Arrays.copyOf(s.variables, s.variables.length);
+        this.objectives = Arrays.copyOf(s.objectives, s.objectives.length);
+    }
     /**
      * Returns the variables from the Solution.
      * @return

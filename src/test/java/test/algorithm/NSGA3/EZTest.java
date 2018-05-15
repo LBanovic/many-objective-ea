@@ -11,7 +11,7 @@ import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.solution.RegularSolutionFactory;
 import hr.fer.zemris.zavrsni.solution.Solution;
 import hr.fer.zemris.zavrsni.solution.SolutionFactory;
-import test.easyproblems.EZProblem;
+import hr.fer.zemris.zavrsni.evaluator.examples.EZProblem;
 
 import java.util.List;
 

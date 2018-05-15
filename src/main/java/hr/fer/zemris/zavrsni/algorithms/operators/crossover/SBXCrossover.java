@@ -22,7 +22,6 @@ public class SBXCrossover<T extends Solution> extends Crossover<T> {
     private double[] lowerBounds;
     private double[] upperBounds;
     private Random rand = new Random();
-    private final static double EPSILON = 1e-6;
 
     public SBXCrossover(SolutionFactory<T> factory, double eta, double[] lowerBounds, double[] upperBounds) {
         super(factory);
@@ -49,7 +48,7 @@ public class SBXCrossover<T extends Solution> extends Crossover<T> {
         double[] c2 = h2.clone();
         for(int i = 0; i < c1.length; i++){
             if(rand.nextBoolean()) continue;
-            if(Math.abs(h1[i] - h2[i]) < EPSILON) continue;
+            if(Math.abs(h1[i] - h2[i]) < MOOPUtils.EPSILON) continue;
             double y1 = Math.min(h1[i], h2[i]);
             double y2 = Math.max(h1[i], h2[i]);
 

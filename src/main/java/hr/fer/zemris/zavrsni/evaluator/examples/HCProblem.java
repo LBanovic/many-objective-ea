@@ -1,4 +1,4 @@
-package test.easyproblems;
+package hr.fer.zemris.zavrsni.evaluator.examples;
 
 import hr.fer.zemris.zavrsni.evaluator.Function;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
@@ -13,6 +13,10 @@ public class HCProblem extends MOOPProblem {
         objectives[1] = new Inverse(f);
         lowerBounds = new double[]{0.1, 0};
         upperBounds = new double[]{1, 5};
+    }
+
+    public HCProblem(Integer i) {
+        this();
     }
 
     @Override public int getNumberOfVariables() {

@@ -4,6 +4,7 @@ import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.Selection;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
+import hr.fer.zemris.zavrsni.solution.RegularSolutionFactory;
 import hr.fer.zemris.zavrsni.solution.Solution;
 import hr.fer.zemris.zavrsni.solution.SolutionFactory;
 
@@ -58,6 +59,9 @@ public class PopulationUtils {
                 problem.getNumberOfVariables(), problem.getNumberOfObjectives(), factory);
     }
 
+    public static List<Solution> generateRandomPopulation(int populationSize, MOOPProblem problem){
+        return generateRandomPopulation(populationSize, problem, new RegularSolutionFactory());
+    }
     public static <T extends Solution> List<T> createNewPopulation(List<T> population, Selection<T> selection, Crossover<T> crossover,
                                                                    Mutation mutation, boolean allowRepetition) {
         List<T> childPopulation = new ArrayList<>(population.size());

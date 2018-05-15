@@ -1,4 +1,4 @@
-package test.easyproblems;
+package hr.fer.zemris.zavrsni.evaluator.examples;
 
 import hr.fer.zemris.zavrsni.evaluator.Function;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
@@ -10,7 +10,7 @@ public class EZProblem extends MOOPProblem {
 
     private int k;
 
-    public EZProblem(int k) {
+    public EZProblem(Integer k) {
         this.k = k;
         Function[] q = new Function[k];
         for(int i = 0; i < k; i++){

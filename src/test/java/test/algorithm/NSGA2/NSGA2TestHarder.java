@@ -7,11 +7,13 @@ import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.crossover.SBXCrossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.mutation.NormalDistributionMutation;
+import hr.fer.zemris.zavrsni.algorithms.operators.mutation.PolynomialMutation;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
+import hr.fer.zemris.zavrsni.evaluator.examples.DTLZ1;
 import hr.fer.zemris.zavrsni.solution.FitnessSolution;
 import hr.fer.zemris.zavrsni.solution.FitnessSolutionFactory;
 import hr.fer.zemris.zavrsni.solution.SolutionFactory;
-import test.easyproblems.HCProblem;
+import hr.fer.zemris.zavrsni.evaluator.examples.HCProblem;
 
 import java.util.List;
 
@@ -28,13 +30,13 @@ public class NSGA2TestHarder {
         final int     tournamentSize  = 8;
 
         final double eta = 20;
-        MOOPProblem problem = new HCProblem();
+        MOOPProblem problem = new DTLZ1(3);
 
         SolutionFactory<FitnessSolution<Double>> f = new FitnessSolutionFactory<>();
 
         List<FitnessSolution<Double>> population = PopulationUtils.generateRandomPopulation(populationSize, problem, f);
         Crossover<FitnessSolution<Double>> crossover = new SBXCrossover<>(f, eta, problem.getLowerBounds(), problem.getUpperBounds());
-        Mutation mutation  = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), sigma, mutationChance);
+        Mutation mutation  = new PolynomialMutation(problem.getLowerBounds(), problem.getUpperBounds(), mutationChance, eta);
 
         NSGA2 nsga2 = new NSGA2(population, problem, crossover, mutation, tournamentSize, maxGen, allowRepetition);
         nsga2.run();
