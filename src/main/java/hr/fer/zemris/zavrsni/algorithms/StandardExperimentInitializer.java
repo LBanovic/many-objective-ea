@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class StandardExperimentInitializer<S extends Solution> {
-    private int maxGen = 250;
+    private int maxGen;
     private double eta = 20;
     private final MOOPProblem problem;
     private final List<S> population;
@@ -20,16 +20,26 @@ public class StandardExperimentInitializer<S extends Solution> {
     private  Mutation mutation;
 
     public StandardExperimentInitializer(MOOPProblem problem, List<S> population, SolutionFactory<S> factory) {
-        double mutationChance = 1. / problem.getNumberOfVariables();
-        this.problem = problem;
-        this.population = population;
-        this.crossover = new SBXCrossover<>(factory, eta, problem.getLowerBounds(), problem.getUpperBounds());
-        this.mutation = new PolynomialMutation(problem.getLowerBounds(), problem.getUpperBounds(), mutationChance, eta);
+        this(problem, population, factory, 250);
     }
 
     public StandardExperimentInitializer(String problemName, Integer problemSize, List<S> population, SolutionFactory<S> factory)
             throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         this(MOOPUtils.getExample(problemName, problemSize), population, factory);
+    }
+
+    public StandardExperimentInitializer(String problemName, Integer problemSize, List<S> population, SolutionFactory<S> factory, int maxGen)
+            throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        this(MOOPUtils.getExample(problemName, problemSize), population, factory, maxGen);
+    }
+
+    public StandardExperimentInitializer(MOOPProblem problem, List<S> population, SolutionFactory<S> factory, int maxGen){
+        double mutationChance = 1. / problem.getNumberOfVariables();
+        this.problem = problem;
+        this.population = population;
+        this.maxGen = maxGen;
+        this.crossover = new SBXCrossover<>(factory, eta, problem.getLowerBounds(), problem.getUpperBounds());
+        this.mutation = new PolynomialMutation(problem.getLowerBounds(), problem.getUpperBounds(), mutationChance, eta);
     }
 
     public int getMaxGen() {

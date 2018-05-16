@@ -18,13 +18,14 @@ public class SPEA2_DTLZ1Test {
         MOOPProblem problem = new DTLZ1(3);
 
         final int populationSize = 100;
+        final int maxGen = 250;
         final String archiveSize = "100";
         final String allowRepetition = "false";
         final String tournamentSize = "2";
 
         List<Solution> population = PopulationUtils.generateRandomPopulation(populationSize, problem);
 
-        AbstractMOOPAlgorithm<FitnessSolution<Double>> spea2 = new SPEA2Experiment().run(problem, population, archiveSize, tournamentSize, allowRepetition);
+        AbstractMOOPAlgorithm<FitnessSolution<Double>> spea2 = new SPEA2Experiment().run(problem, population, maxGen, archiveSize, tournamentSize, allowRepetition);
 
         OutputUtils.printSolutions(spea2);
 //        MOOPProblem problem = new DTLZ1(3);

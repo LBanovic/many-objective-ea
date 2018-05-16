@@ -26,12 +26,13 @@ public class NSGA3_DTLZ1Test {
 
         MOOPProblem problem = new DTLZ1(problemSize);
         String allowRepetition = "false";
+        int maxGen = 250;
 
         List<Solution> population = PopulationUtils.generateRandomPopulation(
                 NSGA3.getPreferredPopulationSize(problem.getNumberOfObjectives(),
                         Integer.parseInt(numberOfDivisions)),
                 problem);
-        AbstractMOOPAlgorithm<Solution> nsga3 = new NSGA3Experiment().run(problem, population, numberOfDivisions, allowRepetition);
+        AbstractMOOPAlgorithm<Solution> nsga3 = new NSGA3Experiment().run(problem, population, maxGen, numberOfDivisions, allowRepetition);
         OutputUtils.printSolutions(nsga3);
     }
 }

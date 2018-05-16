@@ -23,9 +23,11 @@ public class MOEAD_PBI_DTLZ1Test {
         final int populationSize = AbstractMOEAD.getPreferredPopulationSize(Integer.parseInt(parameterH), problem.getNumberOfObjectives());
         final String penalty = "5";
 
+        int maxGen = 250;
+
         List<Solution> population = PopulationUtils.generateRandomPopulation(populationSize, problem);
 
-        AbstractMOOPAlgorithm<Solution> moead = new MOEAD_PBIExperiment().run(problem, population,
+        AbstractMOOPAlgorithm<Solution> moead = new MOEAD_PBIExperiment().run(problem, population, maxGen,
                 closestVectors, parameterH, penalty);
 
         OutputUtils.printSolutions(moead);

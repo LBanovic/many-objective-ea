@@ -32,8 +32,10 @@ public class NSGATest {
 
         List<Solution> population = PopulationUtils.generateRandomPopulation(populationSize, problem);
 
+        int maxGen = 250;
+
         AbstractMOOPAlgorithm<FitnessSolution<Double>> nsga = new NSGAExperiment().run(problem, population,
-                epsilon, sigmaShare, alpha, allowRepetition);
+                maxGen, epsilon, sigmaShare, alpha, allowRepetition);
         OutputUtils.printSolutions(nsga);
     }
 }

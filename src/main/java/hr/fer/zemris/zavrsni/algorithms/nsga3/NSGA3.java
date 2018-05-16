@@ -118,9 +118,17 @@ public class NSGA3 extends AbstractMOOPAlgorithm<Solution>{
                     index = i;
                 }
             }
-            if (!currentFront.contains(aSt))
+
+            boolean contains = false;
+            for(Solution s : currentFront){
+                if(s == aSt){
+                    referencePoints.get(index).addPotentialMember(aSt, minDistance);
+                    contains = true;
+                    break;
+                }
+            }
+            if (!contains)
                 referencePoints.get(index).addMember(aSt);
-            else referencePoints.get(index).addPotentialMember(aSt, minDistance);
         }
     }
 

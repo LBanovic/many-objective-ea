@@ -29,8 +29,10 @@ public class MOEAD_TCH_DTLZ1Test {
 ;
         List<Solution> population = PopulationUtils.generateRandomPopulation(populationSize, problem);
 
+        int maxGen = 250;
+
         AbstractMOOPAlgorithm<Solution> moead = new MOEAD_TCHExperiment().run(problem,
-                population, closestVectors, parameterH);
+                population, maxGen, closestVectors, parameterH);
         OutputUtils.printSolutions(moead);
     }
 }

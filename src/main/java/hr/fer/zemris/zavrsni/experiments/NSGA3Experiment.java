@@ -11,9 +11,11 @@ import java.util.List;
 
 public class NSGA3Experiment extends Experiment<Solution>{
     @Override
-    protected AbstractMOOPAlgorithm<Solution> getAlgorithm(MOOPProblem problem, List<Solution> population, String... params) {
+    protected AbstractMOOPAlgorithm<Solution> getAlgorithm(MOOPProblem problem, List<Solution> population,
+                                                           int maxGen,
+                                                           String... params) {
         StandardExperimentInitializer<Solution> init = new StandardExperimentInitializer<>(problem, population,
-                new RegularSolutionFactory());
+                new RegularSolutionFactory(), maxGen);
         return new NSGA3(init.getPopulation(), init.getProblem(), init.getCrossover(),
                 init.getMutation(), init.getMaxGen(), Boolean.parseBoolean(params[1]), Integer.parseInt(params[0]));
     }

@@ -25,6 +25,8 @@ public class ExperimentParser {
 
         while(all.get(0).startsWith("#")) all.remove(0);
 
+        int maxGen = Integer.parseInt(all.get(0).substring("Max generations:".length()).trim());
+        all.remove(0);
         int populationSize = Integer.parseInt(all.get(0).substring("Population size:".length()).trim());
 
         String alg[] = all.get(1).split(":");
@@ -51,7 +53,7 @@ public class ExperimentParser {
             System.exit(0);
         }
         List<Solution> population = PopulationUtils.generateRandomPopulation(populationSize, problem);
-        AbstractMOOPAlgorithm<?> a = e.run(problem, population, params);
+        AbstractMOOPAlgorithm<?> a = e.run(problem, population, maxGen, params);
         OutputUtils.printSolutions(a);
     }
 }

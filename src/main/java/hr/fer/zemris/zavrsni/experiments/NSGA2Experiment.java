@@ -12,9 +12,11 @@ import java.util.List;
 
 public class NSGA2Experiment extends Experiment<FitnessSolution<Double>>{
     @Override
-    protected AbstractMOOPAlgorithm<FitnessSolution<Double>> getAlgorithm(MOOPProblem problem, List<Solution> population, String... params) {
+    protected AbstractMOOPAlgorithm<FitnessSolution<Double>> getAlgorithm(MOOPProblem problem, List<Solution> population,
+                                                                          int maxGen,
+                                                                          String... params) {
         StandardExperimentInitializer<FitnessSolution<Double>> init = new StandardExperimentInitializer<>(problem,
-                FitnessSolution.<Double>encapsulateSolution(population), new FitnessSolutionFactory<>());
+                FitnessSolution.<Double>encapsulateSolution(population), new FitnessSolutionFactory<>(), maxGen);
         return new NSGA2(init.getPopulation(), init.getProblem(), init.getCrossover(),
                 init.getMutation(), Integer.parseInt(params[0]), init.getMaxGen(), Boolean.parseBoolean(params[1]));
     }
