@@ -3,6 +3,8 @@ package hr.fer.zemris.zavrsni.algorithms.moead;
 import hr.fer.zemris.zavrsni.algorithms.AbstractMOOPAlgorithm;
 import hr.fer.zemris.zavrsni.algorithms.MOOPUtils;
 import hr.fer.zemris.zavrsni.algorithms.PopulationUtils;
+import hr.fer.zemris.zavrsni.algorithms.nsga3.NSGA3;
+import hr.fer.zemris.zavrsni.algorithms.nsga3.NSGA3Util;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
@@ -22,16 +24,15 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
 
     private double[] idealPoint;
 
-    public AbstractMOEAD(List<Solution> population, MOOPProblem problem, int closestVectors, int parameterH,
+    public AbstractMOEAD(List<Solution> population, MOOPProblem problem, int closestVectors, List<Integer> parameterH,
                          Mutation mutation, Crossover<Solution> crossover, int maxGen) {
         super(population, problem, maxGen, crossover, mutation);
 
-        int numberOfWeights = MOOPUtils.binomialCoefficient(parameterH + problem.getNumberOfObjectives() - 1,
-                problem.getNumberOfObjectives() - 1);
+        int numberOfWeights = NSGA3.getPreferredPopulationSize(problem.getNumberOfObjectives(), parameterH);
         if(numberOfWeights < population.size())
             throw new IllegalArgumentException("Not enough weights for the population!");
         weights = new double[numberOfWeights][problem.getNumberOfObjectives()];
-        initializeWeights(problem, parameterH, weights);
+        initializeWeights(problem.getNumberOfObjectives(), parameterH, weights);
         weights = Arrays.copyOf(weights, population.size());
         this.neighbourhoods = new HashMap<>();
         for (int i = 0; i < weights.length; i++) {
@@ -64,24 +65,11 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
         }
     }
 
-    private static void recursiveWeights(List<double[]> weights, double[] weight, int element, int numberOfObjectives, int left, int total) {
-        if (element == numberOfObjectives - 1) {
-            weight[element] = (double) left / total;
-            weights.add(weight.clone());
-        } else {
-            for (int i = 0; i <= left; i++) {
-                weight[element] = (double) i / total;
-                recursiveWeights(weights, weight, element + 1, numberOfObjectives, left - i, total);
-            }
-        }
-    }
-
-    private static void initializeWeights(MOOPProblem problem, int parameterH, double[][] realWeights) {
-        List<double[]> weights = new LinkedList<>();
-        double[] weight = new double[problem.getNumberOfObjectives()];
-        recursiveWeights(weights, weight, 0, problem.getNumberOfObjectives(), parameterH, parameterH);
-        for (int i = 0; i < weights.size(); i++) {
-            realWeights[i] = weights.get(i);
+    private static void initializeWeights(int numberOfObjectives, List<Integer> parameterH, double[][] realWeights) {
+        List<MOOPUtils.ReferencePoint> l = new LinkedList<>();
+        NSGA3Util.generateReferencePoints(l, numberOfObjectives, parameterH);
+        for(int i = 0; i < realWeights.length; i++){
+            realWeights[i] = l.get(i).location;
         }
     }
 
@@ -131,6 +119,9 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
                 if (!dominated) {
                     externalPopulation.add(y);
                 }
+//                if(externalPopulation.size() > populationSize()){
+//                    MOOPUtils.removeExcessSolutions(externalPopulation, populationSize());
+//                }
             }
             gen++;
             if (gen > maxGen) break;

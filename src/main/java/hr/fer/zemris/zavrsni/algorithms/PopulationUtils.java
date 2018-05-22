@@ -72,7 +72,7 @@ public class PopulationUtils {
                 p2 = selection.select(population);
             } while (p2 == p1 && !allowRepetition);
             List<T> children = crossover.cross(p1, p2);
-            for (Solution sol : children) {
+            for (T sol : children) {
                 mutation.mutate(sol);
             }
             for (T child : children) {

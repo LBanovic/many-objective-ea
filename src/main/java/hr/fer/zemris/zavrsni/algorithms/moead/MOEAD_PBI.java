@@ -14,7 +14,7 @@ public class MOEAD_PBI extends AbstractMOEAD {
     private double penalty;
 
     public MOEAD_PBI(List<Solution> population, MOOPProblem problem,
-                     int closestVectors, int parameterH, Mutation mutation, Crossover<Solution> crossover,
+                     int closestVectors, List<Integer> parameterH, Mutation mutation, Crossover<Solution> crossover,
                      int maxGen, double penalty) {
         super(population, problem, closestVectors, parameterH, mutation, crossover, maxGen);
         this.penalty = penalty;

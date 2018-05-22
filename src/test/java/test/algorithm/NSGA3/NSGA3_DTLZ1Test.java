@@ -15,14 +15,16 @@ import hr.fer.zemris.zavrsni.solution.RegularSolutionFactory;
 import hr.fer.zemris.zavrsni.solution.Solution;
 import hr.fer.zemris.zavrsni.solution.SolutionFactory;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class NSGA3_DTLZ1Test {
 
     public static void main(String[] args) {
 
-        String numberOfDivisions = "12";
-        int problemSize = 3;
+        String numberOfDivisions = "6";
+        int problemSize = 5;
 
         MOOPProblem problem = new DTLZ1(problemSize);
         String allowRepetition = "false";
@@ -30,7 +32,7 @@ public class NSGA3_DTLZ1Test {
 
         List<Solution> population = PopulationUtils.generateRandomPopulation(
                 NSGA3.getPreferredPopulationSize(problem.getNumberOfObjectives(),
-                        Integer.parseInt(numberOfDivisions)),
+                        Collections.singletonList(Integer.parseInt(numberOfDivisions))),
                 problem);
         AbstractMOOPAlgorithm<Solution> nsga3 = new NSGA3Experiment().run(problem, population, maxGen, numberOfDivisions, allowRepetition);
         OutputUtils.printSolutions(nsga3);

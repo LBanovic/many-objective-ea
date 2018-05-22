@@ -70,11 +70,11 @@ public class RepeatingObjectives {
     static Function cosineSum(int kVectorLength, double multiplier, double y) {
         return solution -> {
             double[] x = solution.getVariables();
-            double sum = kVectorLength;
+            double sum = 0;
             for (int i = x.length - kVectorLength; i < x.length; i++) {
                 sum += (x[i] - y) * (x[i] - y) - Math.cos(20 * Math.PI * (x[i] - y));
             }
-            sum *= multiplier;
+            sum = (sum + kVectorLength) * multiplier;
             return sum;
         };
     }

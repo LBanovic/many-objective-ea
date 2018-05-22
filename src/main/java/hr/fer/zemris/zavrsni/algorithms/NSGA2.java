@@ -9,11 +9,9 @@ import hr.fer.zemris.zavrsni.algorithms.providers.RankProvider;
 import hr.fer.zemris.zavrsni.algorithms.providers.ValueProvider;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.solution.FitnessSolution;
+import hr.fer.zemris.zavrsni.solution.Solution;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static hr.fer.zemris.zavrsni.algorithms.PopulationUtils.mergePopulations;
 
@@ -55,8 +53,8 @@ public class NSGA2 extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
         List<FitnessSolution<Double>> childPopulation = null;
         while (true) {
             System.out.println(gen);
-            if (gen >= maxGen) break;
-            if (gen == 0) {
+            if(gen >= maxGen) break;
+            else if (gen == 0) {
                 PopulationUtils.evaluatePopulation(population, problem);
                 MOOPUtils.nonDominatedSorting(population, fronts);
                 rankProvider.provide(population);

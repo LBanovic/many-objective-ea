@@ -23,6 +23,7 @@ public class TournamentSelection<T extends Number> implements Selection<FitnessS
         for(int i = 0; i < selected.length; i++){
             double current = population.get(selected[i]).getFitness().doubleValue();
             double former = population.get(selected[index]).getFitness().doubleValue();
+            if(current == former) index = (rand.nextBoolean() ? i : index);
             if(minimization && current < former) index = i;
             if(!minimization && current > former) index = i;
         }

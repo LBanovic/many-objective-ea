@@ -7,6 +7,7 @@ import hr.fer.zemris.zavrsni.algorithms.moead.MOEAD_TCH;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.solution.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class MOEAD_TCHExperiment extends Experiment<Solution>{
@@ -16,8 +17,12 @@ public class MOEAD_TCHExperiment extends Experiment<Solution>{
                                                            String... params) {
         StandardExperimentInitializer<Solution> init = new StandardExperimentInitializer<>(problem, population,
                 new RegularSolutionFactory(), maxGen);
+        List<Integer> l = new LinkedList<>();
+        for(int i = 1; i < params.length; i++){
+            l.add(Integer.parseInt(params[i]));
+        }
         return new MOEAD_TCH(init.getPopulation(), init.getProblem(), Integer.parseInt(params[0]),
-                Integer.parseInt(params[1]),
+                l,
                 init.getMutation(),
                 init.getCrossover(),
                 init.getMaxGen());

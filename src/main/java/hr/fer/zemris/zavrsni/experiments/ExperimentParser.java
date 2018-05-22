@@ -23,7 +23,7 @@ public class ExperimentParser {
             System.exit(0);
         }
 
-        while(all.get(0).startsWith("#")) all.remove(0);
+        while (all.get(0).startsWith("#")) all.remove(0);
 
         int maxGen = Integer.parseInt(all.get(0).substring("Max generations:".length()).trim());
         all.remove(0);
@@ -55,5 +55,7 @@ public class ExperimentParser {
         List<Solution> population = PopulationUtils.generateRandomPopulation(populationSize, problem);
         AbstractMOOPAlgorithm<?> a = e.run(problem, population, maxGen, params);
         OutputUtils.printSolutions(a);
+        System.out.println(MOOPUtils.calculateIGD(a.getNondominatedSolutions(), probName, probSize));
+
     }
 }

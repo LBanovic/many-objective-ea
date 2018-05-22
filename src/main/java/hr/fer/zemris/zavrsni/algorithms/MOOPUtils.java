@@ -1,13 +1,15 @@
 package hr.fer.zemris.zavrsni.algorithms;
 
+import hr.fer.zemris.zavrsni.algorithms.PFGenerators.DTLZ1Generator;
+import hr.fer.zemris.zavrsni.algorithms.PFGenerators.PFGenerator;
+import hr.fer.zemris.zavrsni.algorithms.PFGenerators.SphereGenerator;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
-import hr.fer.zemris.zavrsni.experiments.Experiment;
+import hr.fer.zemris.zavrsni.solution.FitnessSolution;
 import hr.fer.zemris.zavrsni.solution.Solution;
 
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public final class MOOPUtils {
 
@@ -119,14 +121,24 @@ public final class MOOPUtils {
 
 
     public static double calculateDistance(Solution s, Solution t) {
+        return calculateDistance(s.getObjectives(), t.getObjectives());
+    }
+
+    public static double calculateDistance(double[] s1, double[] s2){
         double sum = 0;
-        double[] obj1 = s.getObjectives();
-        double[] obj2 = t.getObjectives();
-        for (int i = 0; i < obj1.length; i++) {
-            double dif = obj1[i] - obj2[i];
+        for (int i = 0; i < s1.length; i++) {
+            double dif = s1[i] - s2[i];
             sum += dif * dif;
         }
         return Math.sqrt(sum);
+    }
+
+    private static double[] convertList(List<Double> s){
+        double[] next = new double[s.size()];
+        for(int i = 0; i < next.length; i++){
+            next[i] = s.get(i);
+        }
+        return next;
     }
 
     private static int factorial(int n) {
@@ -150,5 +162,216 @@ public final class MOOPUtils {
     public static MOOPProblem getExample(String exampleName, int exampleSize) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         return (MOOPProblem) Class.forName("hr.fer.zemris.zavrsni.evaluator.examples." + exampleName).
                 getDeclaredConstructor(Integer.class).newInstance(exampleSize);
+    }
+
+    public static void getPFReferences(List<ReferencePoint> points, ReferencePoint point,
+                                       int numberOfObjectives, int left, int total, int element) {
+        if (element == numberOfObjectives - 1) {
+            point.location[element] = (double) left;
+            points.add(new ReferencePoint(point.location.clone()));
+        } else {
+            for (int i = 0; i <= left; i++) {
+                point.location[element] = (double) i;
+                getPFReferences(points, point, numberOfObjectives, left - i, total, element + 1);
+            }
+        }
+    }
+
+    public static List<List<Double>> generateOneLayer(int numberOfObjectives, int numberOfDivisions,
+                                                      PFGenerator pfgen){
+        List<ReferencePoint> refs = new LinkedList<>();
+        getPFReferences(refs, new ReferencePoint(new double[numberOfObjectives]),
+                numberOfObjectives, numberOfDivisions, numberOfDivisions, 0);
+        return pfgen.generatePF(refs, numberOfDivisions);
+    }
+
+
+    public static List<List<Double>> generateTwoLayer(int numberOfObjectives, int numberOfDivisions,
+                                                      int numberOfOuterDivisions,
+                                                      PFGenerator pfgen){
+        List<List<Double>> l = generateOneLayer(numberOfObjectives, numberOfOuterDivisions, pfgen);
+        List<ReferencePoint> refs = new LinkedList<>();
+        getPFReferences(refs, new ReferencePoint(new double[numberOfObjectives]),
+                numberOfObjectives, numberOfDivisions, numberOfDivisions, 0);
+
+        for(int i = 0; i < refs.size(); i++){
+            for(int j = 0; j < refs.get(i).location.length; j++){
+                refs.get(i).location[j] = (((double) numberOfDivisions) / numberOfObjectives +
+                        refs.get(i).location[j]) / 2.;
+            }
+        }
+        l.addAll(pfgen.generatePF(refs, numberOfDivisions));
+        return l;
+    }
+
+    public static <T extends Solution> double calculateIGD(List<T> solutions, String problemName,
+                                                           int problemSize){
+        List<List<Double>> pf = loadOptimalPF(problemName, problemSize);
+        double sum = 0;
+        for(List<Double> coord : pf){
+            double min = Double.MAX_VALUE;
+            for(Solution s : solutions){
+                min = Math.min(min, calculateDistance(convertList(coord), s.getObjectives()));
+            }
+            sum += min;
+        }
+        return sum / pf.size();
+    }
+
+    private static List<List<Double>> loadOptimalPF(String problemName, int problemSize){
+        return loadOptimalPF(problemName, problemSize, true);
+    }
+
+    private static List<List<Double>> loadOptimalPF(String problemName, int problemSize,
+                                                    boolean minimization){
+        String fileName = "Pareto fronts/PF-" + problemName + "(" + problemSize + ").txt";
+        List<List<Double>> pf = new ArrayList<>();
+        try(BufferedReader br = new BufferedReader(new InputStreamReader
+                (new FileInputStream(fileName)))){
+            String line;
+            while((line = br.readLine()) != null){
+                String[] split = line.split(" ");
+                List<Double> coord = new ArrayList<>(split.length);
+                pf.add(coord);
+                for (String s: split) {
+                    coord.add((minimization ? -1 : 1) * Double.parseDouble(s));
+                }
+            }
+        }catch (IOException e){
+            throw new IllegalArgumentException("Such a problem of given size does not exist.");
+        }
+        return pf;
+    }
+
+    public static <T extends Solution> void removeExcessSolutions(List<T> archive, int archiveSize){
+        while(archive.size() > archiveSize){
+            T toRemove = getLeastDistanceSolution(archive);
+            archive.remove(toRemove);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends Solution> T getLeastDistanceSolution(List<T> archive) {
+        List<Double>[] distances = (List<Double>[])new List[archive.size()];
+
+        for(int i = 0; i < archive.size(); i++){
+            distances[i] = new ArrayList<>(archive.size() - 1);
+            T f = archive.get(i);
+            for(T s : archive){
+                if(f != s){
+                    distances[i].add(calculateDistance(s, f));
+                }
+            }
+            Collections.sort(distances[i]);
+        }
+
+        Set<Integer> considered = new HashSet<>();
+        for(int i = 0; i < archive.size(); i++) considered.add(i);
+        for(int currentIndex = 0; currentIndex < distances[0].size() && considered.size() > 1; currentIndex++) {
+            double min = Double.MAX_VALUE;
+            for(int i = 0; i < distances.length; i++) {
+                try {
+                    if (considered.contains(i)) min = Math.min(min, distances[i].get(currentIndex));
+                }catch (Exception e){
+                    for(List<Double> d : distances) System.out.println(d.size());
+                    System.exit(0);
+                }
+            }
+            for (int i = 0; i < distances.length; i++) {
+                if(considered.contains(i) && Math.abs(distances[i].get(currentIndex) - min) > EPSILON)
+                    considered.remove(i);
+            }
+        }
+
+        int index = considered.toArray(new Integer[1])[0];
+        return archive.get(index);
+    }
+
+    public static class ReferencePoint {
+
+        public final double[] location;
+        private List<Solution> members;
+        private Map<Solution, Double> potentialMembers;
+
+        public ReferencePoint(double[] location) {
+            this.location = location;
+            members = new LinkedList<>();
+            potentialMembers = new HashMap<>();
+        }
+
+        public int getNumberOfMembers(){
+            return members.size();
+        }
+
+        public void addMember(Solution s){
+            members.add(s);
+        }
+
+        public void addPotentialMember(Solution s, double distance){
+            potentialMembers.put(s, distance);
+        }
+
+        public void removePotentialMember(Solution s){
+            potentialMembers.remove(s);
+        }
+
+        public double getDistance(Solution s){
+            return potentialMembers.get(s);
+        }
+
+        public Set<Solution> getPotentialMembers(){
+            return potentialMembers.keySet();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ReferencePoint that = (ReferencePoint) o;
+            return Arrays.equals(location, that.location);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(location);
+        }
+
+        @Override
+        public String toString() {
+            return "ReferencePoint{" +
+                    "location=" + Arrays.toString(location) +
+                    '}';
+        }
+    }
+
+    public static void main(String[] args){
+        String[] problems = {"DTLZ1", "DTLZ2", "DTLZ3", "DTLZ4"};
+        int[] numberOfObjectives = {2, 3, 5, 8, 10};
+        int[] numberOfDivisions = {100, 12, 6};
+        int inner = 2;
+        int outer = 3;
+
+        for(String problem: problems){
+            PFGenerator pfgen;
+            if(problem.equals("DTLZ1")) pfgen = new DTLZ1Generator();
+            else pfgen = new SphereGenerator();
+            for(int i = 0; i < numberOfObjectives.length; i++){
+                List<List<Double>> s;
+                if(numberOfObjectives[i] <= 5){
+                    s = generateOneLayer(numberOfObjectives[i], numberOfDivisions[i], pfgen);
+                }else{
+                    s = generateTwoLayer(numberOfObjectives[i], inner, outer, pfgen);
+                }
+                try(FileOutputStream fos = new FileOutputStream("Pareto fronts/PF-" + problem +
+                        "(" + numberOfObjectives[i] +").txt");
+                    BufferedOutputStream bw = new BufferedOutputStream(fos);
+                    PrintStream ps = new PrintStream(bw, true))
+                {
+                    OutputUtils.printNumberList(ps, s);
+                } catch (IOException e) {
+                    System.out.println("here");
+                }
+            }
+        }
     }
 }

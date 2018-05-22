@@ -21,7 +21,6 @@ public class DTLZ1 extends MOOPProblem {
         objectives = new Function[fVectorLength];
         k = kVectorLength;
         lowerBounds = new double[getNumberOfVariables()];
-        Arrays.fill(lowerBounds, 0);
         upperBounds = new double[getNumberOfVariables()];
         Arrays.fill(upperBounds, 1);
         Function g = RepeatingObjectives.cosineSum(k, 100, 0.5);

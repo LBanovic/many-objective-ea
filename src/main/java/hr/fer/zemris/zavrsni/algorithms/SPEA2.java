@@ -42,11 +42,7 @@ public class SPEA2 extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
                 if (s.getFitness() < 1) archive.add(s);
             }
             if (archive.size() > archiveSize) {
-                while (archive.size() > archiveSize) {
-                    FitnessSolution<Double> solution = getLeastDistanceSolution(archive);
-                    archive.remove(solution);
-                }
-
+                MOOPUtils.removeExcessSolutions(archive, archiveSize);
             } else if (archive.size() < archiveSize) {
                 Collections.sort(combined);
                 for (FitnessSolution<Double> f : combined) {
@@ -61,43 +57,6 @@ public class SPEA2 extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
             population = PopulationUtils.createNewPopulation(archive, selection,
                     crossover, mutation, allowRepetition);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private FitnessSolution<Double> getLeastDistanceSolution(List<FitnessSolution<Double>> archive) {
-        List<Double>[] distances = (List<Double>[])new List[archive.size()];
-
-        for(int i = 0; i < archive.size(); i++){
-            distances[i] = new ArrayList<>(archive.size() - 1);
-            FitnessSolution<Double> f = archive.get(i);
-            for(FitnessSolution<Double> s : archive){
-                if(f != s){
-                    distances[i].add(MOOPUtils.calculateDistance(s, f));
-                }
-            }
-            Collections.sort(distances[i]);
-        }
-
-        Set<Integer> considered = new HashSet<>();
-        for(int i = 0; i < archive.size(); i++) considered.add(i);
-        for(int currentIndex = 0; currentIndex < distances[0].size() && considered.size() > 1; currentIndex++) {
-            double min = Double.MAX_VALUE;
-            for(int i = 0; i < distances.length; i++) {
-                try {
-                    if (considered.contains(i)) min = Math.min(min, distances[i].get(currentIndex));
-                }catch (Exception e){
-                    for(List<Double> d : distances) System.out.println(d.size());
-                    System.exit(0);
-                }
-            }
-            for (int i = 0; i < distances.length; i++) {
-                if(considered.contains(i) && Math.abs(distances[i].get(currentIndex) - min) > MOOPUtils.EPSILON)
-                    considered.remove(i);
-            }
-        }
-
-        int index = considered.toArray(new Integer[1])[0];
-        return archive.get(index);
     }
 
     @Override

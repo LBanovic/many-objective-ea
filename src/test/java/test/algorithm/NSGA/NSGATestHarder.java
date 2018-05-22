@@ -44,7 +44,7 @@ public class NSGATestHarder {
         );
         nsga.run();
 
-        OutputUtils.printParameters(nsga);
+        OutputUtils.printParameters(nsga, System.out);
         System.out.println();
         OutputUtils.printSolutions(nsga);
     }
