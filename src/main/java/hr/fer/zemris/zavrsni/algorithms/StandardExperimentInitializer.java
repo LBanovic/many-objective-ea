@@ -3,6 +3,7 @@ package hr.fer.zemris.zavrsni.algorithms;
 import hr.fer.zemris.zavrsni.algorithms.operators.Crossover;
 import hr.fer.zemris.zavrsni.algorithms.operators.Mutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.crossover.SBXCrossover;
+import hr.fer.zemris.zavrsni.algorithms.operators.mutation.NormalDistributionMutation;
 import hr.fer.zemris.zavrsni.algorithms.operators.mutation.PolynomialMutation;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
 import hr.fer.zemris.zavrsni.solution.Solution;
@@ -35,11 +36,12 @@ public class StandardExperimentInitializer<S extends Solution> {
 
     public StandardExperimentInitializer(MOOPProblem problem, List<S> population, SolutionFactory<S> factory, int maxGen){
         double mutationChance = 1. / problem.getNumberOfVariables();
+        double sigma = mutationChance;
         this.problem = problem;
         this.population = population;
         this.maxGen = maxGen;
-        this.crossover = new SBXCrossover<>(factory, 30, problem.getLowerBounds(), problem.getUpperBounds());
-        this.mutation = new PolynomialMutation(problem.getLowerBounds(), problem.getUpperBounds(), mutationChance, 20);
+        this.crossover = new SBXCrossover<>(factory, eta, problem.getLowerBounds(), problem.getUpperBounds());
+        this.mutation = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), sigma, mutationChance);
     }
 
     public int getMaxGen() {
