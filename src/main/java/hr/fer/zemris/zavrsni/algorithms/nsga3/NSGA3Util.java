@@ -26,8 +26,8 @@ public class NSGA3Util {
     private static double achievementScalarizingFunction(Solution sol, int index) {
         final double onAxis = 1;
         final double other = 1e-6;
-        double max = -Double.MAX_VALUE;
-        double[] objectives = sol.getTranslatedObjectives();
+        double max = Double.MIN_VALUE;
+        double[] objectives = sol.getObjectives();
         for (int i = 0; i < objectives.length; i++) {
             double weight;
             if (i == index) weight = onAxis;
@@ -54,12 +54,12 @@ public class NSGA3Util {
         return extremePoints;
     }
 
-    private static double[] inverseMaxObjectives(List<Solution> St) {
+    private static double[] inverseMaxObjectives(List<Solution> St, double[] idealPoint) {
         double[] maxPoint = new double[St.get(0).getObjectives().length];
-        Arrays.fill(maxPoint, -Double.MAX_VALUE);
         for (int i = 0; i < maxPoint.length; i++) {
+            maxPoint[i] = Double.MIN_VALUE;
             for (Solution s : St) {
-                maxPoint[i] = Math.max(maxPoint[i], -s.getObjectives()[i]);
+                maxPoint[i] = Math.max(maxPoint[i] + idealPoint[i], s.getObjectives()[i]);
             }
         }
         for(int i = 0; i < maxPoint.length; i++){
@@ -86,7 +86,7 @@ public class NSGA3Util {
         if(!duplicate) {
             double[][] samples = new double[extremes.length][extremes.length];
             for (int k = 0; k < extremes.length; k++) {
-                samples[k] = extremes[k].getTranslatedObjectives();
+                samples[k] = extremes[k].getObjectives();
             }
             RealMatrix A = new Array2DRowRealMatrix(samples);
             DecompositionSolver solver = new LUDecomposition(A).getSolver();
@@ -103,7 +103,7 @@ public class NSGA3Util {
             }
         }
         if(duplicate || negativeIntercept){
-            params = inverseMaxObjectives(St);
+            params = inverseMaxObjectives(St, idealPoint);
         }
         return params;
     }
@@ -113,22 +113,10 @@ public class NSGA3Util {
     }
 
     protected static double perpendicularDistance(Solution sol, MOOPUtils.ReferencePoint referencePoint) {
-        double[] point = sol.getTranslatedObjectives();
-        double[] direction = referencePoint.location;
-        double numerator = 0, denominator = 0;
-        for(int i = 0; i < direction.length; i++){
-            numerator += direction[i] * point[i];
-            denominator += direction[i] * direction[i];
-        }
-        double k = numerator / denominator;
-        double d = 0;
-        for(int i = 0; i< direction.length; i++){
-            d += Math.pow(k * direction[i] - point[i], 2);
-        }
-        return Math.sqrt(d);
-//        RealVector s = new ArrayRealVector(point);
-//        RealVector w = new ArrayRealVector(referencePoint.location);
-//        return s.subtract(w.mapMultiply(w.dotProduct(s)).mapMultiply(1. / (w.getNorm() * w.getNorm()))).getNorm();
+        double[] point = sol.getObjectives();
+        RealVector s = new ArrayRealVector(point);
+        RealVector w = new ArrayRealVector(referencePoint.location);
+        return s.subtract(w.mapMultiply(w.dotProduct(s)).mapMultiply(1. / (w.getNorm() * w.getNorm()))).getNorm();
     }
 
     public static void recursiveReferencePoints(List<MOOPUtils.ReferencePoint> points, MOOPUtils.ReferencePoint point,
@@ -146,6 +134,7 @@ public class NSGA3Util {
 
     public static void generateReferencePoints(List<MOOPUtils.ReferencePoint> points, int numberOfObjectives, List<Integer> p){
         MOOPUtils.ReferencePoint r = new MOOPUtils.ReferencePoint(new double[numberOfObjectives]);
+        points.clear();
         recursiveReferencePoints(points, r, numberOfObjectives, p.get(0), p.get(0), 0);
         if(p.size() > 1){
             List<MOOPUtils.ReferencePoint> inside = new LinkedList<>();

@@ -35,7 +35,7 @@ public class NSGA3 extends AbstractMOOPAlgorithm<Solution> {
 
     public static int getPreferredPopulationSize(int numberOfObjectives, List<Integer> numberOfDivisions) {
         int sum = 0;
-        for(int num : numberOfDivisions){
+        for (int num : numberOfDivisions) {
             sum += MOOPUtils.binomialCoefficient(numberOfObjectives + num - 1, num);
         }
         return sum;
@@ -53,8 +53,6 @@ public class NSGA3 extends AbstractMOOPAlgorithm<Solution> {
             System.out.println("Generation: " + gen);
 
             if (gen >= maxGen) {
-                OutputUtils.printSolutions(this);
-                System.out.println("AFTER########################");
                 PopulationUtils.evaluatePopulation(population, problem);
                 MOOPUtils.nonDominatedSorting(population, fronts);
                 break;
@@ -83,8 +81,8 @@ public class NSGA3 extends AbstractMOOPAlgorithm<Solution> {
                 St.addAll(currentFront);
                 normalize(St);
                 List<MOOPUtils.ReferencePoint> copyPoints = new ArrayList<>(points);
-                associate(copyPoints, currentFront);
-                niching(copyPoints, newPopulation);
+                associate(St, copyPoints, currentFront);
+                niching(copyPoints, newPopulation, currentFront);
             }
             population = newPopulation;
             gen++;
@@ -102,37 +100,32 @@ public class NSGA3 extends AbstractMOOPAlgorithm<Solution> {
         for (int i = 0; i < problem.getNumberOfObjectives(); i++) {
             double intercept = Math.max(NSGA3Util.getIntercept(hyperplane, i), 10e-10);
             for (Solution sol : St) {
-                double[] objectives = sol.getTranslatedObjectives();
+                double[] objectives = sol.getObjectives();
                 objectives[i] /= intercept;
             }
         }
     }
 
-    private void associate(List<MOOPUtils.ReferencePoint> referencePoints, List<Solution> currentFront) {
-        boolean notLastFront = true;
-        for(int j = 0; j < fronts.size() && notLastFront; j++) {
-            for(Solution t: fronts.get(j)) {
+    private void associate(List<Solution> St, List<MOOPUtils.ReferencePoint> referencePoints, List<Solution> currentFront) {
+        for (int j = 0; j < St.size(); j++) {
 
-                double minDistance = Double.MAX_VALUE;
-                int index = 0;
-                for (int i = 0; i < referencePoints.size(); i++) {
-                    double distance = NSGA3Util.perpendicularDistance(t, referencePoints.get(i));
-                    if (minDistance > distance) {
-                        minDistance = distance;
-                        index = i;
-                    }
+            double minDistance = Double.MAX_VALUE;
+            int index = 0;
+            for (int i = 0; i < referencePoints.size(); i++) {
+                double distance = NSGA3Util.perpendicularDistance(St.get(j), referencePoints.get(i));
+                if (minDistance > distance) {
+                    minDistance = distance;
+                    index = i;
                 }
-
-                if (fronts.get(j) == currentFront) {
-                    referencePoints.get(index).addPotentialMember(t, minDistance);
-                    notLastFront = false;
-                }
-                else referencePoints.get(index).addMember(t);
             }
+
+            Solution s = St.get(j);
+            if(!currentFront.contains(s)) referencePoints.get(index).addMember(s);
+            else referencePoints.get(index).addPotentialMember(s, minDistance);
         }
     }
 
-    private MOOPUtils.ReferencePoint findNicheReferencePoint(List<MOOPUtils.ReferencePoint> points){
+    private MOOPUtils.ReferencePoint findNicheReferencePoint(List<MOOPUtils.ReferencePoint> points) {
         List<MOOPUtils.ReferencePoint> Jmin = new LinkedList<>();
         int currentMin = Integer.MAX_VALUE;
         for (MOOPUtils.ReferencePoint point : points) {
@@ -172,14 +165,15 @@ public class NSGA3 extends AbstractMOOPAlgorithm<Solution> {
     }
 
     private void niching(List<MOOPUtils.ReferencePoint> points,
-                         List<Solution> newPopulation) {
+                         List<Solution> newPopulation, List<Solution> currentFront) {
         while (newPopulation.size() < populationSize()) {
             MOOPUtils.ReferencePoint ref = findNicheReferencePoint(points);
             Solution chosen = selectClusterMember(ref);
-            if(chosen != null){
+            if (chosen != null) {
                 newPopulation.add(chosen);
                 ref.addMember(chosen);
                 ref.removePotentialMember(chosen);
+                currentFront.remove(chosen);
             } else {
                 points.remove(ref);
             }

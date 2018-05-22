@@ -6,7 +6,6 @@ public class Solution {
 
     private double[] variables;
     private double[] objectives;
-    private double[] translatedObjectives;
 
     /**
      * Constructs a new Solution with the given variables and the given number of objectives.
@@ -16,13 +15,11 @@ public class Solution {
     public Solution(double[] variables, int numberOfObjectives){
         this.variables = variables;
         this.objectives = new double[numberOfObjectives];
-        this.translatedObjectives = new double[numberOfObjectives];
     }
 
     protected Solution(Solution s){
         this.variables = Arrays.copyOf(s.variables, s.variables.length);
         this.objectives = Arrays.copyOf(s.objectives, s.objectives.length);
-        this.translatedObjectives = Arrays.copyOf(s.objectives, s.objectives.length);
     }
     /**
      * Returns the variables from the Solution.
@@ -32,13 +29,9 @@ public class Solution {
         return variables;
     }
 
-    public double[] getTranslatedObjectives() {
-        return translatedObjectives;
-    }
-
     public void translateObjectives(double[] idealPoint){
         for(int i = 0; i < idealPoint.length; i++){
-            translatedObjectives[i] = objectives[i] - idealPoint[i];
+            objectives[i] = objectives[i] - idealPoint[i];
         }
     }
     /**
