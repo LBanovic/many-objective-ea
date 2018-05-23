@@ -119,9 +119,9 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
                 if (!dominated) {
                     externalPopulation.add(y);
                 }
-//                if(externalPopulation.size() > populationSize()){
-//                    MOOPUtils.removeExcessSolutions(externalPopulation, populationSize());
-//                }
+                if(externalPopulation.size() > populationSize()){
+                    MOOPUtils.removeExcessSolutions(externalPopulation, populationSize());
+                }
             }
             gen++;
             if (gen > maxGen) break;
