@@ -1,4 +1,4 @@
-Max generation: 500
-Population size: 156
-Algorithm: NSGA3 {3,2,false}
-Problem: DTLZ1 {8}
+Max generation: 350
+Population size: 91
+Algorithm: SPEA2 {91,2,false}
+Problem: DTLZ2 {3}

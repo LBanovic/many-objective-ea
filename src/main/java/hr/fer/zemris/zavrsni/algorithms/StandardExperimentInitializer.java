@@ -40,7 +40,7 @@ public class StandardExperimentInitializer<S extends Solution> {
         this.population = population;
         this.maxGen = maxGen;
         this.crossover = new SBXCrossover<>(factory, eta, problem.getLowerBounds(), problem.getUpperBounds());
-        this.mutation = new NormalDistributionMutation(problem.getLowerBounds(), problem.getUpperBounds(), mutationChance, mutationChance);
+        this.mutation = new PolynomialMutation(problem.getLowerBounds(), problem.getUpperBounds(), mutationChance, 20);
     }
 
     public int getMaxGen() {

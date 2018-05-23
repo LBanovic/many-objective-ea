@@ -22,7 +22,7 @@ public abstract class MOOPProblem {
             throw new RuntimeException("Array not the required dimension");
         }
         for (int i = 0; i < objectives.length; i++) {
-            objectives[i] = -this.objectives[i].valueAt(solution);
+            objectives[i] = this.objectives[i].valueAt(solution);
         }
     }
 

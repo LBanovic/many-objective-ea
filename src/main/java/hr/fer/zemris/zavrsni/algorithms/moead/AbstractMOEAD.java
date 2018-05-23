@@ -94,7 +94,7 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
                 problem.evaluateObjectives(y);
                 double[] obj = y.getObjectives();
                 for (int j = 0; j < problem.getNumberOfObjectives(); j++) {
-                    if (idealPoint[j] < obj[j]) idealPoint[j] = obj[j];
+                    if (idealPoint[j] > obj[j]) idealPoint[j] = obj[j];
                 }
                 for (int j : indices) {
                     if (scalarizationFunction(y, weights[j], idealPoint) <=

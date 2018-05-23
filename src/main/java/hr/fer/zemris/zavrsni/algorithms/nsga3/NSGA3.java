@@ -333,9 +333,7 @@ public class NSGA3 extends AbstractMOOPAlgorithm<Solution> {
             try {
                 ref = Jmin.get(rand.nextInt(Jmin.size()));
             }catch(IllegalArgumentException e){
-                System.out.println(currentMin);
-                System.out.println(newPopulation.size());
-                System.exit(0);
+                throw new RuntimeException("Restart this");
             }
             List<Solution> I = new LinkedList<>(ref.getPotentialMembers());
 

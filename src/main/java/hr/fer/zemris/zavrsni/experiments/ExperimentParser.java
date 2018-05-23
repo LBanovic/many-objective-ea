@@ -52,6 +52,7 @@ public class ExperimentParser {
             e1.printStackTrace();
             System.exit(0);
         }
+        //TODO napisati experimente za sve algoritme i ovdje pokrenuti 20 puta svaki, zapisati IGD na vrh datoteke
         List<Solution> population = PopulationUtils.generateRandomPopulation(populationSize, problem);
         AbstractMOOPAlgorithm<?> a = e.run(problem, population, maxGen, params);
         OutputUtils.printSolutions(a);

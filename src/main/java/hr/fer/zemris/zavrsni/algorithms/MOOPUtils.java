@@ -86,13 +86,13 @@ public final class MOOPUtils {
         double[] obj2 = s2.getObjectives();
 
         for (int i = 0; i < obj1.length; i++) {
-            if (obj1[i] < obj2[i]) {
+            if (obj1[i] > obj2[i]) {
                 return false;
             }
         }
 
         for (int i = 0; i < obj1.length; i++) {
-            if (obj1[i] > obj2[i]) {
+            if (obj1[i] < obj2[i]) {
                 return true;
             }
         }
@@ -221,7 +221,7 @@ public final class MOOPUtils {
                 List<Double> coord = new ArrayList<>(split.length);
                 pf.add(coord);
                 for (String s: split) {
-                    coord.add((minimization ? -1 : 1) * Double.parseDouble(s));
+                    coord.add((minimization ? 1 : -1) * Double.parseDouble(s));
                 }
             }
         }catch (IOException e){

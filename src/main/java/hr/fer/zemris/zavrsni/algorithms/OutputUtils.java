@@ -18,7 +18,7 @@ public class OutputUtils {
         for (T s : a.getNondominatedSolutions()) {
             ps.print("[");
             for(int i = 0; i < s.getObjectives().length; i++){
-                ps.print(-s.getObjectives()[i]);
+                ps.print(s.getObjectives()[i]);
                 if(i != s.getObjectives().length - 1) ps.print(", ");
             }
             ps.print("]");
