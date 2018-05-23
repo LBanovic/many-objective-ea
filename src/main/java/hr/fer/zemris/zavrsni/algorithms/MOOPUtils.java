@@ -4,7 +4,6 @@ import hr.fer.zemris.zavrsni.algorithms.PFGenerators.DTLZ1Generator;
 import hr.fer.zemris.zavrsni.algorithms.PFGenerators.PFGenerator;
 import hr.fer.zemris.zavrsni.algorithms.PFGenerators.SphereGenerator;
 import hr.fer.zemris.zavrsni.evaluator.MOOPProblem;
-import hr.fer.zemris.zavrsni.solution.FitnessSolution;
 import hr.fer.zemris.zavrsni.solution.Solution;
 
 import java.io.*;
@@ -141,22 +140,10 @@ public final class MOOPUtils {
         return next;
     }
 
-    private static int factorial(int n) {
-        int multiply = 1;
-        for (int i = 1; i <= n; i++) {
-            multiply *= i;
-        }
-        return multiply;
-    }
-
     public static int binomialCoefficient(int n, int k) {
         if (n < k) throw new IllegalArgumentException("n must be greater than k");
-        if (k > n / 2) k = n - k;
-        int mul = 1;
-        for (int i = n - k + 1; i <= n; i++) {
-            mul *= i;
-        }
-        return mul / factorial(k);
+        if(k == 0 || k == n) return 1;
+        return binomialCoefficient(n - 1, k - 1) + binomialCoefficient(n-1, k);
     }
 
     public static MOOPProblem getExample(String exampleName, int exampleSize) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
