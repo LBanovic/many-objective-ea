@@ -18,11 +18,12 @@ public class SPEA2 extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
 
     private boolean allowRepetition;
 
+    //TODO SPEA SE BLESIRA
     public SPEA2(List<FitnessSolution<Double>> population, MOOPProblem problem, int maxGen, int archiveSize,
                  Crossover<FitnessSolution<Double>> crossover, Mutation mutation,
                  int tournamentSize, boolean allowRepetition) {
         super(population, problem, maxGen, crossover, mutation);
-        this.archiveSize = archiveSize;
+        this.archiveSize = Math.min(100, archiveSize);
         this.allowRepetition = allowRepetition;
         selection = new TournamentSelection<>(tournamentSize, true);
         speaFitnessProvider = new SPEAFitnessProvider();
@@ -30,7 +31,7 @@ public class SPEA2 extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
 
     @Override
     public void run() {
-        archive = new LinkedList<>();
+        archive = new ArrayList<>(this.archiveSize + this.population.size());
         int gen = 0;
         while (true) {
             System.out.println("Generation: " + gen);

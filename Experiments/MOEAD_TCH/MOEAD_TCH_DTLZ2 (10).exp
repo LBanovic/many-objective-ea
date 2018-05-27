@@ -1,0 +1,4 @@
+Max generation: 1000
+Population size: 275
+Algorithm: MOEAD_TCH {20,3,2}
+Problem: DTLZ2 {10}

@@ -1,0 +1,4 @@
+Max generation: 400
+Population size: 91
+Algorithm: MOEAD_PBI {20,12,5}
+Problem: DTLZ2 {3}

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class StandardExperimentInitializer<S extends Solution> {
     private int maxGen;
-    private double eta = 30;
+    private double eta = 20;
     private final MOOPProblem problem;
     private final List<S> population;
     private  Crossover<S> crossover;

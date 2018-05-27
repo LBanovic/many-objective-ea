@@ -1,0 +1,4 @@
+Max generation: 1000
+Population size: 275
+Algorithm: SPEA2 {275,2,false}
+Problem: DTLZ2 {10}

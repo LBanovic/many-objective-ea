@@ -1,0 +1,4 @@
+Max generation: 750
+Population size: 156
+Algorithm: NSGA2 {5,false}
+Problem: DTLZ3 {8}

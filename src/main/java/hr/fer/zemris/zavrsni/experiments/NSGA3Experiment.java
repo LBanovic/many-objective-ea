@@ -21,6 +21,7 @@ public class NSGA3Experiment extends Experiment<Solution>{
         for(int i = 0; i < params.length - 1; i++){
             divisions.add(Integer.parseInt(params[i]));
         }
+        init.setEta(30);
         return new NSGA3(init.getPopulation(), init.getProblem(), init.getCrossover(),
                 init.getMutation(), init.getMaxGen(), Boolean.parseBoolean(params[params.length - 1]), divisions);
     }

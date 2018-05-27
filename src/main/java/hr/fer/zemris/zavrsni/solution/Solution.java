@@ -45,19 +45,19 @@ public class Solution {
         sb.append(variables[variables.length - 1]);
         return sb.toString();
     }
-
-    @Override public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Solution solution = (Solution) o;
-        return Arrays.equals(variables, solution.variables);
-    }
-
-    @Override public int hashCode() {
-        return Arrays.hashCode(variables);
-    }
+//
+//    @Override public boolean equals(Object o) {
+//        if (this == o) {
+//            return true;
+//        }
+//        if (o == null || getClass() != o.getClass()) {
+//            return false;
+//        }
+//        Solution solution = (Solution) o;
+//        return Arrays.equals(variables, solution.variables);
+//    }
+//
+//    @Override public int hashCode() {
+//        return Arrays.hashCode(variables);
+//    }
 }

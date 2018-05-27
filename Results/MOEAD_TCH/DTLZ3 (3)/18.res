@@ -1,0 +1,2 @@
+MOEAD_TCH_DTLZ3_3
+IGD: Infinity

@@ -24,10 +24,12 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
 
     private double[] idealPoint;
 
+    private int archiveSize;
+
     public AbstractMOEAD(List<Solution> population, MOOPProblem problem, int closestVectors, List<Integer> parameterH,
                          Mutation mutation, Crossover<Solution> crossover, int maxGen) {
         super(population, problem, maxGen, crossover, mutation);
-
+        archiveSize = 100;
         int numberOfWeights = NSGA3.getPreferredPopulationSize(problem.getNumberOfObjectives(), parameterH);
         if(numberOfWeights < population.size())
             throw new IllegalArgumentException("Not enough weights for the population!");
@@ -119,13 +121,14 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
                 if (!dominated) {
                     externalPopulation.add(y);
                 }
-                if(externalPopulation.size() > populationSize()){
-                    MOOPUtils.removeExcessSolutions(externalPopulation, populationSize());
-                }
+            }
+            if(externalPopulation.size() > archiveSize){
+                MOOPUtils.removeExcessSolutions(externalPopulation, archiveSize);
             }
             gen++;
             if (gen > maxGen) break;
         }
+
     }
 
     private double euclidianDistance(double[] v1, double[] v2) {
