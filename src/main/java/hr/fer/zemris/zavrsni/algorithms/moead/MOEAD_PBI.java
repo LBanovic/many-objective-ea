@@ -27,8 +27,8 @@ public class MOEAD_PBI extends AbstractMOEAD {
         RealVector f = new ArrayRealVector(s.getObjectives());
         RealVector lambda = new ArrayRealVector(weights);
 
-        double d1 = z.subtract(f).dotProduct(lambda) / lambda.getNorm(),
-                d2 = f.subtract(z.subtract(lambda.mapMultiplyToSelf(d1))).getNorm();
+        double d1 = f.subtract(z).dotProduct(lambda) / lambda.getNorm(),
+                d2 = f.subtract(z.add(lambda.mapMultiplyToSelf(d1))).getNorm();
         return d1 + penalty * d2;
     }
 }

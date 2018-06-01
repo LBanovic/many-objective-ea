@@ -29,7 +29,7 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
     public AbstractMOEAD(List<Solution> population, MOOPProblem problem, int closestVectors, List<Integer> parameterH,
                          Mutation mutation, Crossover<Solution> crossover, int maxGen) {
         super(population, problem, maxGen, crossover, mutation);
-        archiveSize = 100;
+        archiveSize = populationSize();
         int numberOfWeights = NSGA3.getPreferredPopulationSize(problem.getNumberOfObjectives(), parameterH);
         if(numberOfWeights < population.size())
             throw new IllegalArgumentException("Not enough weights for the population!");
@@ -63,7 +63,7 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
         this.idealPoint = new double[problem.getNumberOfObjectives()];
         for (int i = 0; i < idealPoint.length; i++) {
             final int k = i;
-            idealPoint[i] = Collections.max(population, Comparator.comparingDouble(o -> o.getObjectives()[k])).getObjectives()[i];
+            idealPoint[i] = Collections.min(population, Comparator.comparingDouble(o -> o.getObjectives()[k])).getObjectives()[i];
         }
     }
 
@@ -118,12 +118,9 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
                         break;
                     }
                 }
-                if (!dominated) {
+                if (!dominated && externalPopulation.size() < archiveSize) {
                     externalPopulation.add(y);
                 }
-            }
-            if(externalPopulation.size() > archiveSize){
-                MOOPUtils.removeExcessSolutions(externalPopulation, archiveSize);
             }
             gen++;
             if (gen > maxGen) break;

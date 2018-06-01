@@ -74,8 +74,6 @@ public class ExperimentParser {
             }
         }
 
-        System.out.println("here");
-
         List<AbstractMOOPAlgorithm<?>> sorted =
                 igdMap.keySet().stream().sorted(Comparator.comparing(igdMap::get)).collect(Collectors.toList());
 

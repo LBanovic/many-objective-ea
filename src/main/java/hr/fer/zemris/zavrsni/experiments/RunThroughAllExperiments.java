@@ -10,7 +10,7 @@ public class RunThroughAllExperiments {
 
     public static void main(String[] args) throws IOException {
         Visitor v = new Visitor();
-        Files.walkFileTree(Paths.get("Experiments/SPEA2"), v);
+        Files.walkFileTree(Paths.get("Experiments/MOEAD_TCH"), v);
     }
 
     private static class Visitor extends SimpleFileVisitor<Path>{
