@@ -111,21 +111,11 @@ public abstract class AbstractMOEAD extends AbstractMOOPAlgorithm<Solution> {
                         j--;
                     }
                 }
-                boolean dominated = false;
-                for (Solution sol : externalPopulation) {
-                    if (MOOPUtils.dominates(sol, y)) {
-                        dominated = true;
-                        break;
-                    }
-                }
-                if (!dominated && externalPopulation.size() < archiveSize) {
-                    externalPopulation.add(y);
-                }
             }
             gen++;
             if (gen > maxGen) break;
         }
-
+        externalPopulation = population;
     }
 
     private double euclidianDistance(double[] v1, double[] v2) {

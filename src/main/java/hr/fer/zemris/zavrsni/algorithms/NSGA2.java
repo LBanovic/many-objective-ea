@@ -82,6 +82,8 @@ public class NSGA2 extends AbstractMOOPAlgorithm<FitnessSolution<Double>> {
             }
             gen++;
         }
+        PopulationUtils.evaluatePopulation(population, problem);
+        MOOPUtils.nonDominatedSorting(population, fronts);
     }
 
     @Override
