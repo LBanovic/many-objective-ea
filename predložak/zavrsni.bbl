@@ -1,0 +1,118 @@
+\begin{thebibliography}{17}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Chiang(2014)]{nsga3_impl}
+T.~Chiang.
+\newblock nsga3cpp: A c++ implementation of nsga-iii.
+\newblock
+  \url{http://web.ntnu.edu.tw/~tcchiang/publications/nsga3cpp/nsga3cpp.htm},
+  2014.
+
+\bibitem[Corne et~al.(2000)Corne, Knowles, i Oates]{pesa}
+David~W. Corne, Joshua~D. Knowles, i Martin~J. Oates.
+\newblock The pareto envelope-based selection algorithm for multiobjective
+  optimization.
+\newblock U Marc Schoenauer, Kalyanmoy Deb, G{\"u}nther Rudolph, Xin Yao,
+  Evelyne Lutton, Juan~Julian Merelo, i Hans-Paul Schwefel, urednici,
+  \emph{Parallel Problem Solving from Nature PPSN VI}, stranice 839--848,
+  Berlin, Heidelberg, 2000. Springer Berlin Heidelberg.
+
+\bibitem[Das i Dennis(1998)]{das_dennis}
+I.~Das i J.~E. Dennis.
+\newblock Normal-boundary intersection: A new method for generating the pareto
+  surface in nonlinear multicriteria optimization problems.
+\newblock \emph{SIAM Journal on Optimization}, 8\penalty0 (3):\penalty0
+  631--657, 08 1998.
+
+\bibitem[Deb i B.(1994)]{sbx}
+K.~Deb i Agrawal~R. B.
+\newblock Simulated binary crossover for continuous search space.
+\newblock Technical report, Department of Mechanical Engineering, Indian
+  Institute of Technology, 1994.
+
+\bibitem[Deb i Goyal(1999)]{geneas}
+K.~Deb i M.~Goyal.
+\newblock A combined genetic adaptive search (geneas) for engineering design.
+\newblock 26, 08 1999.
+
+\bibitem[Deb i Jain(2014)]{nsga3}
+K.~Deb i H.~Jain.
+\newblock An evolutionary many-objective optimization algorithm using
+  reference-point-based nondominated sorting approach, part i: Solving problems
+  with box constraints.
+\newblock \emph{IEEE Transactions on Evolutionary Computation}, 18\penalty0
+  (4):\penalty0 577--601, 08 2014.
+
+\bibitem[Deb et~al.(2001)Deb, Thiele, Laumanns, i Zitzler]{dtlz}
+K.~Deb, L.~Thiele, M.~Laumanns, i E.~Zitzler.
+\newblock Scalable test problems for evolutionary multi-objective optimization.
+\newblock Technical Report 112, Institut für Technische Informatik und
+  Kommunikationsnetze, ETH Zürich, 07 2001.
+
+\bibitem[Deb et~al.(2002)Deb, Pratap, Agarwal, i Meyarivan]{nsga2}
+K.~Deb, A.~Pratap, S.~Agarwal, i T.~Meyarivan.
+\newblock A fast and elitist multiobjective genetic algorithm: Nsga-ii.
+\newblock \emph{IEEE Transactions on Evolutionary Computation}, 6\penalty0
+  (2):\penalty0 182--197, 2002.
+
+\bibitem[Fonseca i Fleming(1993)]{moga}
+Carlos~M. Fonseca i Peter~J. Fleming.
+\newblock Genetic algorithms for multiobjective optimization: Formulation,
+  discussion and generalization, 1993.
+
+\bibitem[Horn et~al.(1994)Horn, Nafpliotis, i Goldberg]{npga}
+Jeffrey Horn, N~Nafpliotis, i D.E. Goldberg.
+\newblock A niched pareto genetic algorithm for multi-objective optimization,
+  07 1994.
+
+\bibitem[Ishibuchi et~al.(2017)Ishibuchi, Setoguchi, Masuda, i Nojima]{problem}
+H.~Ishibuchi, Y.~Setoguchi, H.~Masuda, i Y.~Nojima.
+\newblock Performance of decomposition-based many-objective algorithms strongly
+  depends on pareto front shapes.
+\newblock \emph{IEEE Transactions on Evolutionary Computation}, stranice
+  169--190, 2017.
+
+\bibitem[Schaffer(1985)]{vega}
+J~Schaffer.
+\newblock \emph{Multiple Objective Optimization with Vector Evaluated Genetic
+  Algorithms.}
+\newblock 01 1985.
+
+\bibitem[Srinivas i Deb(1994)]{nsga}
+N.~Srinivas i K.~Deb.
+\newblock Multiobjective optimization using nondominated sorting in genetic
+  algorithms.
+\newblock \emph{Evolutionary Computation}, 2\penalty0 (3):\penalty0 221--248,
+  1994.
+
+\bibitem[Čupić()]{pioa2013}
+M.~Čupić.
+\newblock Prirodom inspirirani optimizacijski algoritmi.
+\newblock \url{http://java.zemris.fer.hr/nastava/pioa/}.
+
+\bibitem[Zhang i Li(2007)]{moead}
+Q.~Zhang i H.~Li.
+\newblock Moea/d: A multiobjective evolutionary algorithm based on
+  decomposition.
+\newblock \emph{IEEE Transactions on Evolutionary Computation}, 11\penalty0
+  (6):\penalty0 712--731, December 2007.
+
+\bibitem[Zitzler i Thiele(1998)]{spea}
+E.~Zitzler i L.~Thiele.
+\newblock An evolutionary algorithm for multiobjective optimization the
+  strength pareto approach.
+\newblock Technical Report~43, Computer Engineering and Communication Networks
+  Lab (TIK), Swiss Federal Institute of Technology (ETH) Zurich, 1998.
+
+\bibitem[Zitzler et~al.(2001)Zitzler, Laumanns, i Thiele]{spea2}
+E.~Zitzler, M.~Laumanns, i M.~Thiele.
+\newblock Spea2: Improving the strength pareto evolutionary algorithm.
+\newblock Technical Report 103, Computer Engineering and Networks Laboratory
+  (TIK), Department of Electrical Engineering, Swiss Federal Institute of
+  Technology (ETH) Zurich, 2001.
+
+\end{thebibliography}

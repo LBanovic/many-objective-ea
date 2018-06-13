@@ -1,0 +1,29 @@
+\BOOKMARK [0][-]{chapter.1}{Uvod}{}% 1
+\BOOKMARK [1][-]{section.1.1}{Problem vi\235ekriterijske optimizacije}{chapter.1}% 2
+\BOOKMARK [1][-]{section.1.2}{Pareto optimalnost}{chapter.1}% 3
+\BOOKMARK [0][-]{chapter.2}{Pregled podrucja}{}% 4
+\BOOKMARK [0][-]{chapter.3}{Algoritmi}{}% 5
+\BOOKMARK [1][-]{section.3.1}{NSGA}{chapter.3}% 6
+\BOOKMARK [2][-]{subsection.3.1.1}{Uvod}{section.3.1}% 7
+\BOOKMARK [2][-]{subsection.3.1.2}{Opis algoritma}{section.3.1}% 8
+\BOOKMARK [1][-]{section.3.2}{NSGA-II}{chapter.3}% 9
+\BOOKMARK [2][-]{subsection.3.2.1}{Uvod}{section.3.2}% 10
+\BOOKMARK [2][-]{subsection.3.2.2}{Opis algoritma}{section.3.2}% 11
+\BOOKMARK [1][-]{section.3.3}{SPEA2}{chapter.3}% 12
+\BOOKMARK [2][-]{subsection.3.3.1}{Uvod}{section.3.3}% 13
+\BOOKMARK [2][-]{subsection.3.3.2}{Opis algoritma}{section.3.3}% 14
+\BOOKMARK [1][-]{section.3.4}{NSGA-III}{chapter.3}% 15
+\BOOKMARK [2][-]{subsection.3.4.1}{Uvod}{section.3.4}% 16
+\BOOKMARK [2][-]{subsection.3.4.2}{Opis algoritma}{section.3.4}% 17
+\BOOKMARK [1][-]{section.3.5}{MOEA/D}{chapter.3}% 18
+\BOOKMARK [2][-]{subsection.3.5.1}{Uvod}{section.3.5}% 19
+\BOOKMARK [2][-]{subsection.3.5.2}{Opis algoritma}{section.3.5}% 20
+\BOOKMARK [0][-]{chapter.4}{Usporedba algoritama}{}% 21
+\BOOKMARK [1][-]{section.4.1}{Eksperimentalni postav}{chapter.4}% 22
+\BOOKMARK [1][-]{section.4.2}{Vi\235ekriterijski problemi i rezultati}{chapter.4}% 23
+\BOOKMARK [2][-]{subsection.4.2.1}{DTLZ1}{section.4.2}% 24
+\BOOKMARK [2][-]{subsection.4.2.2}{DTLZ2}{section.4.2}% 25
+\BOOKMARK [2][-]{subsection.4.2.3}{DTLZ3}{section.4.2}% 26
+\BOOKMARK [2][-]{subsection.4.2.4}{DTLZ4}{section.4.2}% 27
+\BOOKMARK [0][-]{chapter.5}{Zakljucak}{}% 28
+\BOOKMARK [0][-]{chapter*.32}{Literatura}{}% 29

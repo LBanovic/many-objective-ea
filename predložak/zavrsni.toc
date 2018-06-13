@@ -1,0 +1,30 @@
+\babel@toc {croatian}{}
+\contentsline {chapter}{\numberline {1}Uvod}{1}
+\contentsline {section}{\numberline {1.1}Problem vi\IeC {\v s}ekriterijske optimizacije}{1}
+\contentsline {section}{\numberline {1.2}Pareto optimalnost}{2}
+\contentsline {section}{\numberline {1.3}Pregled podru\IeC {\v c}ja}{3}
+\contentsline {chapter}{\numberline {2}Algoritmi}{4}
+\contentsline {section}{\numberline {2.1}NSGA}{4}
+\contentsline {subsection}{\numberline {2.1.1}Uvod}{4}
+\contentsline {subsection}{\numberline {2.1.2}Opis algoritma}{5}
+\contentsline {section}{\numberline {2.2}NSGA-II}{8}
+\contentsline {subsection}{\numberline {2.2.1}Uvod}{8}
+\contentsline {subsection}{\numberline {2.2.2}Opis algoritma}{8}
+\contentsline {section}{\numberline {2.3}SPEA2}{10}
+\contentsline {subsection}{\numberline {2.3.1}Uvod}{10}
+\contentsline {subsection}{\numberline {2.3.2}Opis algoritma}{10}
+\contentsline {section}{\numberline {2.4}NSGA-III}{12}
+\contentsline {subsection}{\numberline {2.4.1}Uvod}{12}
+\contentsline {subsection}{\numberline {2.4.2}Opis algoritma}{13}
+\contentsline {section}{\numberline {2.5}MOEA/D}{16}
+\contentsline {subsection}{\numberline {2.5.1}Uvod}{16}
+\contentsline {subsection}{\numberline {2.5.2}Opis algoritma}{16}
+\contentsline {chapter}{\numberline {3}Usporedba algoritama}{20}
+\contentsline {section}{\numberline {3.1}Eksperimentalni postav}{20}
+\contentsline {section}{\numberline {3.2}Vi\IeC {\v s}ekriterijski problemi i rezultati}{22}
+\contentsline {subsection}{\numberline {3.2.1}DTLZ1}{23}
+\contentsline {subsection}{\numberline {3.2.2}DTLZ2}{27}
+\contentsline {subsection}{\numberline {3.2.3}DTLZ3}{31}
+\contentsline {subsection}{\numberline {3.2.4}DTLZ4}{35}
+\contentsline {chapter}{\numberline {4}Zaklju\IeC {\v c}ak}{39}
+\contentsline {chapter}{Literatura}{40}
